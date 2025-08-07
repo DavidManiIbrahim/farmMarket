@@ -52,6 +52,19 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				agricultural: {
+					green: 'hsl(var(--agricultural-green))',
+					light: 'hsl(var(--agricultural-light))'
+				},
+				earth: {
+					brown: 'hsl(var(--earth-brown))'
+				},
+				harvest: {
+					gold: 'hsl(var(--harvest-gold))'
+				},
+				farm: {
+					blue: 'hsl(var(--farm-blue))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -67,6 +80,16 @@ export default {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',
 				sm: 'calc(var(--radius) - 4px)'
+			},
+			backgroundImage: {
+				'gradient-primary': 'var(--gradient-primary)',
+				'gradient-hero': 'var(--gradient-hero)',
+				'gradient-card': 'var(--gradient-card)'
+			},
+			boxShadow: {
+				'soft': 'var(--shadow-soft)',
+				'card': 'var(--shadow-card)',
+				'hero': 'var(--shadow-hero)'
 			},
 			keyframes: {
 				'accordion-down': {
