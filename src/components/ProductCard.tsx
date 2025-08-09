@@ -40,6 +40,10 @@ export const ProductCard = ({
         <img
           src={image}
           alt={name}
+          loading="lazy"
+          decoding="async"
+          width={400}
+          height={300}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         

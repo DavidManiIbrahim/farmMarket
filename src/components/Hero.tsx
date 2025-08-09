@@ -9,7 +9,10 @@ export const Hero = () => {
       <div className="absolute inset-0">
         <img
           src={heroImage}
-          alt="Fresh farm produce"
+          alt="Fresh Nigerian farm produce – rural farmers marketplace hero"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-background/50" />
