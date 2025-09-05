@@ -1,9 +1,26 @@
 import { Button } from "@/components/ui/button";
 import { Search, User, ShoppingCart, Menu } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const handleAuthAction = () => {
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    setIsMenuOpen(false);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -46,26 +63,49 @@ export const Header = () => {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-4">
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={() => alert('Cart functionality requires backend integration')}
-          >
-            <ShoppingCart className="w-5 h-5" />
-          </Button>
-          <Button 
-            variant="outline"
-            onClick={() => alert('Login requires Supabase integration')}
-          >
-            <User className="w-4 h-4 mr-2" />
-            Login
-          </Button>
-          <Button 
-            variant="farm"
-            onClick={() => alert('Farmer registration requires Supabase integration')}
-          >
-            Join as Farmer
-          </Button>
+          {user && (
+            <Button 
+              variant="ghost" 
+              size="icon"
+              onClick={() => navigate('/dashboard')}
+            >
+              <ShoppingCart className="w-5 h-5" />
+            </Button>
+          )}
+          
+          {user ? (
+            <>
+              <Button 
+                variant="outline"
+                onClick={() => navigate('/dashboard')}
+              >
+                <User className="w-4 h-4 mr-2" />
+                Dashboard
+              </Button>
+              <Button 
+                variant="ghost"
+                onClick={handleSignOut}
+              >
+                Sign Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                variant="outline"
+                onClick={handleAuthAction}
+              >
+                <User className="w-4 h-4 mr-2" />
+                Login
+              </Button>
+              <Button 
+                variant="farm"
+                onClick={() => navigate('/auth')}
+              >
+                Join as Farmer
+              </Button>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -111,21 +151,52 @@ export const Header = () => {
 
             {/* Mobile Actions */}
             <div className="space-y-2">
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => alert('Login requires Supabase integration')}
-              >
-                <User className="w-4 h-4 mr-2" />
-                Login
-              </Button>
-              <Button 
-                variant="farm" 
-                className="w-full"
-                onClick={() => alert('Farmer registration requires Supabase integration')}
-              >
-                Join as Farmer
-              </Button>
+              {user ? (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => {
+                      navigate('/dashboard');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Dashboard
+                  </Button>
+                  <Button 
+                    variant="ghost" 
+                    className="w-full"
+                    onClick={handleSignOut}
+                  >
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => {
+                      navigate('/auth');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    <User className="w-4 h-4 mr-2" />
+                    Login
+                  </Button>
+                  <Button 
+                    variant="farm" 
+                    className="w-full"
+                    onClick={() => {
+                      navigate('/auth');
+                      setIsMenuOpen(false);
+                    }}
+                  >
+                    Join as Farmer
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
