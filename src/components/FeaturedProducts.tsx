@@ -124,7 +124,12 @@ export const FeaturedProducts = () => {
 
         {/* View All Button */}
         <div className="text-center">
-          <Button variant="outline" size="lg" className="text-lg px-8">
+          <Button 
+            variant="outline" 
+            size="lg" 
+            className="text-lg px-8"
+            onClick={() => alert('Product catalog requires Supabase integration')}
+          >
             View All Products
             <ArrowRight className="ml-2 w-5 h-5" />
           </Button>

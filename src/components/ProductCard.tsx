@@ -127,6 +127,7 @@ export const ProductCard = ({
           variant={inStock ? "farm" : "outline"} 
           className="w-full" 
           disabled={!inStock}
+          onClick={() => inStock ? alert('Cart functionality requires Supabase integration') : undefined}
         >
           <ShoppingCart className="w-4 h-4 mr-2" />
           {inStock ? 'Add to Cart' : 'Out of Stock'}

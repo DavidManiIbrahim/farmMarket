@@ -34,11 +34,21 @@ export const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button variant="hero" size="lg" className="text-lg px-8 py-4">
+            <Button 
+              variant="hero" 
+              size="lg" 
+              className="text-lg px-8 py-4"
+              onClick={() => alert('Marketplace requires Supabase integration for product data')}
+            >
               Start Buying Fresh
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
-            <Button variant="farm" size="lg" className="text-lg px-8 py-4">
+            <Button 
+              variant="farm" 
+              size="lg" 
+              className="text-lg px-8 py-4"
+              onClick={() => alert('Farmer registration requires Supabase integration')}
+            >
               Sell Your Produce
             </Button>
           </div>

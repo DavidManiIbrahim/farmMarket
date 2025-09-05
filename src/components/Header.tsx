@@ -46,14 +46,26 @@ export const Header = () => {
 
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="ghost" size="icon">
+          <Button 
+            variant="ghost" 
+            size="icon"
+            onClick={() => alert('Cart functionality requires backend integration')}
+          >
             <ShoppingCart className="w-5 h-5" />
           </Button>
-          <Button variant="outline">
+          <Button 
+            variant="outline"
+            onClick={() => alert('Login requires Supabase integration')}
+          >
             <User className="w-4 h-4 mr-2" />
             Login
           </Button>
-          <Button variant="farm">Join as Farmer</Button>
+          <Button 
+            variant="farm"
+            onClick={() => alert('Farmer registration requires Supabase integration')}
+          >
+            Join as Farmer
+          </Button>
         </div>
 
         {/* Mobile Menu Button */}
@@ -99,11 +111,21 @@ export const Header = () => {
 
             {/* Mobile Actions */}
             <div className="space-y-2">
-              <Button variant="outline" className="w-full">
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => alert('Login requires Supabase integration')}
+              >
                 <User className="w-4 h-4 mr-2" />
                 Login
               </Button>
-              <Button variant="farm" className="w-full">Join as Farmer</Button>
+              <Button 
+                variant="farm" 
+                className="w-full"
+                onClick={() => alert('Farmer registration requires Supabase integration')}
+              >
+                Join as Farmer
+              </Button>
             </div>
           </div>
         </div>
