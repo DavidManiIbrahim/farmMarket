@@ -14,9 +14,9 @@ import {
   MapPin,
   Star
 } from 'lucide-react';
-import { BuyerSidebar } from '@/components/buyer/BuyerSidebar';
 import { ProductCard } from '@/components/buyer/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import DashboardLayout from '@/components/DashboardLayout';
 
 interface Product {
   id: string;
@@ -128,26 +128,22 @@ const BuyerDashboard = () => {
 
   if (loading) {
     return (
-      <BuyerSidebar>
+      <DashboardLayout>
         <div className="flex items-center justify-center min-h-96">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
-      </BuyerSidebar>
+      </DashboardLayout>
     );
   }
 
   return (
-    <BuyerSidebar>
+    <DashboardLayout>
       <div className="space-y-6">
         {/* Welcome Header */}
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">
-              Welcome back, {profile?.full_name || 'Buyer'}!
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Discover fresh produce from local farmers
-            </p>
+            <h1 className="text-3xl font-bold text-foreground">Buyer Dashboard</h1>
+            <p className="text-muted-foreground">Welcome back, {profile?.full_name || 'Buyer'}!</p>
           </div>
           <Button 
             onClick={() => navigate('/buyer/products')}
@@ -159,55 +155,51 @@ const BuyerDashboard = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Card className="hover:shadow-md transition-shadow">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
                   <p className="text-2xl font-bold text-foreground">{stats.totalOrders}</p>
-                  <p className="text-xs text-primary">All time</p>
                 </div>
-                <Package className="w-8 h-8 text-primary/60" />
+                <Package className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Spent</p>
-                  <p className="text-2xl font-bold text-foreground">${stats.totalSpent.toFixed(2)}</p>
-                  <p className="text-xs text-primary">All time</p>
+                  <p className="text-2xl font-bold text-agricultural-green">${stats.totalSpent.toFixed(2)}</p>
                 </div>
-                <DollarSign className="w-8 h-8 text-primary/60" />
+                <DollarSign className="w-8 h-8 text-agricultural-green" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Pending Orders</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.pendingOrders}</p>
-                  <p className="text-xs text-orange-500">Awaiting delivery</p>
+                  <p className="text-2xl font-bold text-harvest-gold">{stats.pendingOrders}</p>
                 </div>
-                <Clock className="w-8 h-8 text-orange-500/60" />
+                <Clock className="w-8 h-8 text-harvest-gold" />
               </div>
             </CardContent>
           </Card>
 
-          <Card className="hover:shadow-md transition-shadow">
+          <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Wishlist Items</p>
                   <p className="text-2xl font-bold text-foreground">{stats.favoriteProducts}</p>
-                  <p className="text-xs text-red-500">Saved products</p>
                 </div>
-                <Heart className="w-8 h-8 text-red-500/60" />
+                <Heart className="w-8 h-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -306,7 +298,7 @@ const BuyerDashboard = () => {
           </CardContent>
         </Card>
       </div>
-    </BuyerSidebar>
+    </DashboardLayout>
   );
 };
 
