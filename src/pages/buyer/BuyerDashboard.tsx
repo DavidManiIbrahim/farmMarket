@@ -67,11 +67,11 @@ const BuyerDashboard = () => {
 
     try {
       // Fetch recent products
-      const { data: productsData } = await supabase
+      const { data: productsData, error: productsError } = await supabase
         .from('products')
         .select(`
           *,
-          profiles!inner (
+          profiles:farmer_id (
             full_name,
             phone
           )
@@ -79,6 +79,10 @@ const BuyerDashboard = () => {
         .eq('is_available', true)
         .order('created_at', { ascending: false })
         .limit(6);
+
+      if (productsError) {
+        console.error('Error fetching products:', productsError);
+      }
 
       // Fetch recent orders
       const { data: ordersData } = await supabase
@@ -101,7 +105,7 @@ const BuyerDashboard = () => {
       const totalSpent = allOrders?.reduce((sum, order) => sum + order.total_price, 0) || 0;
       const pendingOrders = allOrders?.filter(order => order.status === 'pending').length || 0;
 
-      setRecentProducts(productsData as any || []);
+      setRecentProducts((productsData || []) as any);
       setRecentOrders(ordersData as any || []);
       setStats({
         totalOrders,

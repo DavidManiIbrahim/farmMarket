@@ -22,13 +22,14 @@ interface Product {
   profiles?: {
     full_name: string;
     phone?: string;
-  };
+  } | null;
 }
 
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
   onToggleWishlist: (productId: string) => void;
+  onContactFarmer?: (product: Product) => void;
   isInWishlist: boolean;
   isInCart: boolean;
 }
@@ -37,6 +38,7 @@ export const ProductCard = ({
   product, 
   onAddToCart, 
   onToggleWishlist, 
+  onContactFarmer,
   isInWishlist, 
   isInCart 
 }: ProductCardProps) => {
