@@ -40,9 +40,21 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       roles: ['farmer', 'seller', 'admin']
     },
     {
-      title: 'Products',
+      title: 'Browse Products',
       icon: Package,
-      href: '/products',
+      href: '/buyer/products',
+      roles: ['seller']
+    },
+    {
+      title: 'My Products',
+      icon: Package,
+      href: '/farmer/products',
+      roles: ['farmer']
+    },
+    {
+      title: 'Add Product',
+      icon: Package,
+      href: '/farmer/add-product',
       roles: ['farmer']
     },
     {

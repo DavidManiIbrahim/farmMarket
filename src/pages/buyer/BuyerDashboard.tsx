@@ -71,7 +71,7 @@ const BuyerDashboard = () => {
         .from('products')
         .select(`
           *,
-          profiles!products_farmer_id_fkey (
+          profiles!inner (
             full_name,
             phone
           )
