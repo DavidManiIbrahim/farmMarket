@@ -134,14 +134,14 @@ export const ProductCard = ({
               >
                 View Details
               </Button>
-              <Button
-                onClick={() => onAddToCart(product)}
-                disabled={isInCart || product.stock_quantity === 0}
-                className="flex-1"
-              >
-                <ShoppingCart className="w-4 h-4 mr-2" />
-                {isInCart ? 'In Cart' : 'Add to Cart'}
-              </Button>
+            <Button
+              onClick={() => onAddToCart(product)}
+              disabled={isInCart || product.stock_quantity === 0}
+              className="flex-1 hover:bg-primary/90 transition-colors"
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              {isInCart ? 'In Cart' : 'Request Purchase'}
+            </Button>
             </div>
           </div>
         </CardContent>

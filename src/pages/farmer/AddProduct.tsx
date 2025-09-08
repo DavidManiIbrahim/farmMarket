@@ -9,8 +9,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
 import { useToast } from '@/hooks/use-toast';
-import { Leaf, Package, DollarSign, Calendar } from 'lucide-react';
+import { Leaf, Package, DollarSign, Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
+import { cn } from '@/lib/utils';
 import DashboardLayout from '@/components/DashboardLayout';
 
 const AddProduct = () => {
@@ -24,13 +28,15 @@ const AddProduct = () => {
     description: '',
     category: '',
     price: '',
-    unit: 'lb',
+    unit: 'kg',
     stock_quantity: '',
     is_organic: false,
     harvest_date: '',
     location: '',
     image_url: ''
   });
+  
+  const [harvestDate, setHarvestDate] = useState<Date>();
 
   const categories = [
     'Vegetables',
@@ -75,7 +81,7 @@ const AddProduct = () => {
             unit: formData.unit,
             stock_quantity: parseInt(formData.stock_quantity),
             is_organic: formData.is_organic,
-            harvest_date: formData.harvest_date || null,
+            harvest_date: harvestDate ? harvestDate.toISOString().split('T')[0] : null,
             location: formData.location,
             image_url: formData.image_url || null,
             is_available: true
@@ -222,16 +228,34 @@ const AddProduct = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="harvest_date" className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
+                  <Label className="flex items-center gap-2">
+                    <CalendarIcon className="w-4 h-4" />
                     Harvest Date
                   </Label>
-                  <Input
-                    id="harvest_date"
-                    type="date"
-                    value={formData.harvest_date}
-                    onChange={(e) => handleInputChange('harvest_date', e.target.value)}
-                  />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !harvestDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {harvestDate ? format(harvestDate, "PPP") : "Pick harvest date"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={harvestDate}
+                        onSelect={setHarvestDate}
+                        disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                        initialFocus
+                        className="pointer-events-auto"
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div className="space-y-2">

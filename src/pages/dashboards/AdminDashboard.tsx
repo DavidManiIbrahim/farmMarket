@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -7,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Users, Package, ShoppingCart, DollarSign, Search, Filter } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import DashboardLayout from '@/components/DashboardLayout';
 
 interface User {
@@ -204,89 +206,8 @@ const AdminDashboard = () => {
 
         {activeTab === 'overview' && (
           <div className="space-y-6">
-            {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Total Users</p>
-                      <p className="text-2xl font-bold text-foreground">{stats.totalUsers}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {stats.farmers} farmers, {stats.sellers} buyers
-                      </p>
-                    </div>
-                    <Users className="w-8 h-8 text-primary" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Products</p>
-                      <p className="text-2xl font-bold text-foreground">{stats.totalProducts}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {stats.availableProducts} available
-                      </p>
-                    </div>
-                    <Package className="w-8 h-8 text-agricultural-green" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Orders</p>
-                      <p className="text-2xl font-bold text-foreground">{stats.totalOrders}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {stats.pendingOrders} pending
-                      </p>
-                    </div>
-                    <ShoppingCart className="w-8 h-8 text-farm-blue" />
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground">Total Revenue</p>
-                      <p className="text-2xl font-bold text-foreground">${stats.totalRevenue.toFixed(2)}</p>
-                    </div>
-                    <DollarSign className="w-8 h-8 text-harvest-gold" />
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Recent Orders */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Orders</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {orders.slice(0, 5).map((order) => (
-                    <div key={order.id} className="flex justify-between items-center p-3 bg-muted rounded-lg">
-                      <div>
-                        <p className="font-medium">{order.products.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {order.quantity} items • ${order.total_price.toFixed(2)}
-                        </p>
-                      </div>
-                      <Badge variant={order.status === 'pending' ? 'secondary' : 'default'}>
-                        {order.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
+            {/* Analytics Dashboard */}
+            <AnalyticsDashboard userRole="admin" />
           </div>
         )}
 
