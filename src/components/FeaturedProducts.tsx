@@ -1,14 +1,20 @@
 import { ProductCard } from "./ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import organicTomatoes from "@/assets/organic-tomatoes.jpg";
+import yellowCorn from "@/assets/yellow-corn.jpg";
+import cassavaTubers from "@/assets/cassava-tubers.jpg";
+import premiumRice from "@/assets/premium-rice.jpg";
+import plantainBunches from "@/assets/plantain-bunches.jpg";
+import organicYam from "@/assets/organic-yam.jpg";
 
 const sampleProducts = [
   {
     id: "1",
     name: "Fresh Organic Tomatoes",
-    price: 2500,
+    price: 125000,
     unit: "kg",
-    image: "https://images.unsplash.com/photo-1546470427-e8f832e3b41b?w=400&h=300&fit=crop",
+    image: organicTomatoes,
     farmer: {
       name: "Adebayo Farm",
       location: "Ogun State",
@@ -22,9 +28,9 @@ const sampleProducts = [
   {
     id: "2",
     name: "Sweet Yellow Corn",
-    price: 1800,
+    price: 180000,
     unit: "bag",
-    image: "https://images.unsplash.com/photo-1551754655-cd27e38d2076?w=400&h=300&fit=crop",
+    image: yellowCorn,
     farmer: {
       name: "Emeka Agric",
       location: "Enugu State",
@@ -37,9 +43,9 @@ const sampleProducts = [
   {
     id: "3",
     name: "Fresh Cassava Tubers",
-    price: 3200,
+    price: 150000,
     unit: "bag",
-    image: "https://images.unsplash.com/photo-1609501676725-7186f28fa6a4?w=400&h=300&fit=crop",
+    image: cassavaTubers,
     farmer: {
       name: "Kano Farms Ltd",
       location: "Kano State",
@@ -52,9 +58,9 @@ const sampleProducts = [
   {
     id: "4",
     name: "Premium Rice (Local)",
-    price: 4500,
+    price: 200000,
     unit: "bag",
-    image: "https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400&h=300&fit=crop",
+    image: premiumRice,
     farmer: {
       name: "Kebbi Rice Mill",
       location: "Kebbi State",
@@ -67,9 +73,9 @@ const sampleProducts = [
   {
     id: "5",
     name: "Fresh Plantain Bunches",
-    price: 1500,
+    price: 100000,
     unit: "bunch",
-    image: "https://images.unsplash.com/photo-1603833665858-e61d17a86224?w=400&h=300&fit=crop",
+    image: plantainBunches,
     farmer: {
       name: "Cross River Farms",
       location: "Cross River State",
@@ -83,9 +89,9 @@ const sampleProducts = [
   {
     id: "6",
     name: "Organic Yam Tubers",
-    price: 2800,
+    price: 135000,
     unit: "tuber",
-    image: "https://images.unsplash.com/photo-1574636830912-a4c8b65db86f?w=400&h=300&fit=crop",
+    image: organicYam,
     farmer: {
       name: "Benue Yam Growers",
       location: "Benue State",

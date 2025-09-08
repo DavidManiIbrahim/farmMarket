@@ -34,7 +34,7 @@ export const ProductCard = ({
   const discountedPrice = discount ? price - (price * discount / 100) : price;
 
   return (
-    <div className="group bg-gradient-card rounded-xl shadow-card hover:shadow-hero transition-all duration-300 overflow-hidden border border-border">
+    <div className="group bg-gradient-card rounded-xl shadow-card hover:shadow-hero transition-all duration-300 overflow-hidden border border-border hover:scale-105 hover:border-primary/30">
       {/* Image Container */}
       <div className="relative overflow-hidden">
         <img
