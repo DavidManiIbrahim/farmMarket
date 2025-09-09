@@ -20,6 +20,7 @@ const OrdersPage = lazy(() => import("./pages/buyer/Orders"));
 const OrderDetailsPage = lazy(() => import("./pages/buyer/OrderDetails"));
 const BrowseProducts = lazy(() => import("./pages/buyer/BrowseProducts"));
 const AddProduct = lazy(() => import("./pages/farmer/AddProduct"));
+const EditProduct = lazy(() => import("./pages/farmer/EditProduct"));
 const FarmerProducts = lazy(() => import("./pages/farmer/FarmerProducts"));
 const Requests = lazy(() => import("./pages/farmer/Requests"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
@@ -79,6 +80,7 @@ const App = () => (
             <Route path="/buyer/orders/:id" element={<ProtectedRoute allowedRoles={['seller']}><OrderDetailsPage /></ProtectedRoute>} />
             <Route path="/farmer/add-product" element={<ProtectedRoute requiredRole="farmer"><AddProduct /></ProtectedRoute>} />
             <Route path="/farmer/products" element={<ProtectedRoute requiredRole="farmer"><FarmerProducts /></ProtectedRoute>} />
+            <Route path="/farmer/products/edit/:id" element={<ProtectedRoute requiredRole="farmer"><EditProduct /></ProtectedRoute>} />
             <Route path="/farmer/requests" element={<ProtectedRoute requiredRole="farmer"><Requests /></ProtectedRoute>} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route 

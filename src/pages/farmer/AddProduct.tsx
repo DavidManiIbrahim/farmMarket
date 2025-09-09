@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { uploadProductImage } from '@/lib/image-upload';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -115,22 +116,16 @@ const AddProduct = () => {
       // If a file was selected, upload to Supabase Storage and get public URL
       let uploadedImageUrl: string | null = null;
       if (imageFile) {
-        const fileExt = imageFile.name.split('.').pop();
-        const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
-        const filePath = `products/${fileName}`;
-
-        const { error: uploadError } = await supabaseClient.storage
-          .from('product-images')
-          .upload(filePath, imageFile, {
-            cacheControl: '3600',
-            upsert: false
+        try {
+          uploadedImageUrl = await uploadProductImage(imageFile, user.id, supabaseClient);
+        } catch (error: any) {
+          toast({
+            title: "Image Upload Error",
+            description: error.message,
+            variant: "destructive"
           });
-        if (uploadError) throw uploadError;
-
-        const { data: publicUrlData } = supabaseClient.storage
-          .from('product-images')
-          .getPublicUrl(filePath);
-        uploadedImageUrl = publicUrlData.publicUrl;
+          return;
+        }
       }
       // Get the selected category name for the category text field (backward compatibility)
       const selectedCategory = categories.find(cat => cat.id === formData.category_id);
