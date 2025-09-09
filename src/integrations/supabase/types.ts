@@ -76,6 +76,7 @@ export type Database = {
           created_at: string
           description: string | null
           expiry_date: string | null
+          farmer_display_name: string | null
           farmer_id: string
           harvest_date: string | null
           id: string
@@ -94,6 +95,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           expiry_date?: string | null
+          farmer_display_name?: string | null
           farmer_id: string
           harvest_date?: string | null
           id?: string
@@ -112,6 +114,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           expiry_date?: string | null
+          farmer_display_name?: string | null
           farmer_id?: string
           harvest_date?: string | null
           id?: string
@@ -174,6 +177,56 @@ export type Database = {
           zip_code?: string | null
         }
         Relationships: []
+      }
+      purchase_requests: {
+        Row: {
+          buyer_id: string
+          created_at: string
+          farmer_id: string
+          id: string
+          notes: string | null
+          product_id: string
+          quantity: number
+          status: string
+          stripe_session_id: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          buyer_id: string
+          created_at?: string
+          farmer_id: string
+          id?: string
+          notes?: string | null
+          product_id: string
+          quantity?: number
+          status?: string
+          stripe_session_id?: string | null
+          total_amount: number
+          updated_at?: string
+        }
+        Update: {
+          buyer_id?: string
+          created_at?: string
+          farmer_id?: string
+          id?: string
+          notes?: string | null
+          product_id?: string
+          quantity?: number
+          status?: string
+          stripe_session_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_requests_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {

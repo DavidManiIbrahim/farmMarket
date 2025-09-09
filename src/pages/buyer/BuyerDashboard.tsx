@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { ProductCard } from '@/components/buyer/ProductCard';
 import { useNavigate } from 'react-router-dom';
+import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import DashboardLayout from '@/components/DashboardLayout';
 
 interface Product {
@@ -46,7 +47,7 @@ interface Order {
 }
 
 const BuyerDashboard = () => {
-  const { user, profile } = useAuth();
+  const { user, profile, userRole } = useAuth();
   const navigate = useNavigate();
   const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
@@ -158,56 +159,8 @@ const BuyerDashboard = () => {
           </Button>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Orders</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.totalOrders}</p>
-                </div>
-                <Package className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Spent</p>
-                  <p className="text-2xl font-bold text-agricultural-green">${stats.totalSpent.toFixed(2)}</p>
-                </div>
-                <DollarSign className="w-8 h-8 text-agricultural-green" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pending Orders</p>
-                  <p className="text-2xl font-bold text-harvest-gold">{stats.pendingOrders}</p>
-                </div>
-                <Clock className="w-8 h-8 text-harvest-gold" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Wishlist Items</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.favoriteProducts}</p>
-                </div>
-                <Heart className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Analytics Dashboard */}
+        <AnalyticsDashboard userRole={userRole?.role || 'seller'} />
 
         {/* Recent Orders */}
         <Card>

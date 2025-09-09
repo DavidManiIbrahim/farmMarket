@@ -32,10 +32,7 @@ interface Product {
   harvest_date?: string;
   location: string;
   farmer_id: string;
-  profiles?: {
-    full_name: string;
-    phone?: string;
-  } | null;
+  farmer_display_name?: string;
 }
 
 const BrowseProducts = () => {
@@ -54,13 +51,7 @@ const BrowseProducts = () => {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select(`
-          *,
-          profiles:farmer_id (
-            full_name,
-            phone
-          )
-        `)
+        .select('*')
         .eq('is_available', true)
         .order('created_at', { ascending: false });
 
@@ -76,9 +67,25 @@ const BrowseProducts = () => {
     }
   };
 
-  const handleAddToCart = (product: Product) => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product);
+  const handleAddToCart = async (product: Product) => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase.functions.invoke('create-payment', {
+        body: {
+          productId: product.id,
+          quantity: 1,
+          farmerId: product.farmer_id
+        }
+      });
+
+      if (error) throw error;
+
+      // Open Stripe checkout in a new tab
+      window.open(data.url, '_blank');
+    } catch (error: any) {
+      console.error('Error creating payment:', error);
+    }
   };
 
   const handleToggleWishlist = (productId: string) => {

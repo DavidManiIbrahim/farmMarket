@@ -24,8 +24,7 @@ const Auth = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    fullName: '',
-    role: '' as 'farmer' | 'seller' | ''
+    fullName: ''
   });
 
   // Redirect if already logged in
@@ -70,17 +69,11 @@ const Auth = () => {
       return;
     }
 
-    if (!signupForm.role) {
-      setError('Please select your role');
-      setLoading(false);
-      return;
-    }
-
     const { error } = await signUp(
       signupForm.email,
       signupForm.password,
       signupForm.fullName,
-      signupForm.role
+      'seller' // Default role assignment
     );
 
     if (error) {
@@ -183,33 +176,6 @@ const Auth = () => {
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-role">I am a:</Label>
-                    <Select
-                      value={signupForm.role}
-                      onValueChange={(value: 'farmer' | 'seller') => 
-                        setSignupForm({ ...signupForm, role: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="farmer">
-                          <div className="flex items-center space-x-2">
-                            <Leaf className="w-4 h-4 text-agricultural-green" />
-                            <span>Farmer - I grow and sell produce</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="seller">
-                          <div className="flex items-center space-x-2">
-                            <ShoppingCart className="w-4 h-4 text-farm-blue" />
-                            <span>Buyer - I purchase fresh produce</span>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
 
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>

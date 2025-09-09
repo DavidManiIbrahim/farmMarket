@@ -11,6 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Badge } from '@/components/ui/badge';
 import { Plus, Package, DollarSign, Users, Edit, Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import DashboardLayout from '@/components/DashboardLayout';
 
 interface Product {
@@ -307,44 +308,8 @@ const FarmerDashboard = () => {
           </Dialog>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Products</p>
-                  <p className="text-2xl font-bold text-foreground">{stats.totalProducts}</p>
-                </div>
-                <Package className="w-8 h-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Available Products</p>
-                  <p className="text-2xl font-bold text-agricultural-green">{stats.availableProducts}</p>
-                </div>
-                <Users className="w-8 h-8 text-agricultural-green" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Inventory Value</p>
-                  <p className="text-2xl font-bold text-harvest-gold">${stats.totalValue.toFixed(2)}</p>
-                </div>
-                <DollarSign className="w-8 h-8 text-harvest-gold" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        {/* Analytics Dashboard */}
+        <AnalyticsDashboard userRole="farmer" />
 
         {/* Products List */}
         <Card>

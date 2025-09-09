@@ -16,6 +16,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const BrowseProducts = lazy(() => import("./pages/buyer/BrowseProducts"));
 const AddProduct = lazy(() => import("./pages/farmer/AddProduct"));
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 
 const queryClient = new QueryClient();
 
@@ -54,24 +55,9 @@ const App = () => (
                   </ProtectedRoute>
                 } 
               />
-              <Route 
-                path="/buyer/products" 
-                element={
-                  <ProtectedRoute allowedRoles={['seller']}>
-                    <BrowseProducts />
-                  </ProtectedRoute>
-                } 
-              />
-              
-              {/* Farmer routes */}
-              <Route 
-                path="/farmer/add-product" 
-                element={
-                  <ProtectedRoute requiredRole="farmer">
-                    <AddProduct />
-                  </ProtectedRoute>
-                } 
-              />
+            <Route path="/buyer/products" element={<ProtectedRoute allowedRoles={['seller']}><BrowseProducts /></ProtectedRoute>} />
+            <Route path="/farmer/add-product" element={<ProtectedRoute requiredRole="farmer"><AddProduct /></ProtectedRoute>} />
+            <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route 
                 path="/farmer/*" 
                 element={
