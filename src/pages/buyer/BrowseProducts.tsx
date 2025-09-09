@@ -32,10 +32,7 @@ interface Product {
   harvest_date?: string;
   location: string;
   farmer_id: string;
-  profiles?: {
-    full_name: string;
-    phone?: string;
-  } | null;
+  farmer_display_name?: string;
 }
 
 const BrowseProducts = () => {
@@ -54,13 +51,7 @@ const BrowseProducts = () => {
     try {
       const { data, error } = await supabase
         .from('products')
-        .select(`
-          *,
-          profiles:farmer_id (
-            full_name,
-            phone
-          )
-        `)
+        .select('*')
         .eq('is_available', true)
         .order('created_at', { ascending: false });
 

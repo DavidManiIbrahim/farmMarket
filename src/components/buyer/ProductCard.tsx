@@ -19,10 +19,7 @@ interface Product {
   harvest_date?: string;
   location: string;
   farmer_id: string;
-  profiles?: {
-    full_name: string;
-    phone?: string;
-  } | null;
+  farmer_display_name?: string;
 }
 
 interface ProductCardProps {
@@ -100,7 +97,7 @@ export const ProductCard = ({
             {/* Farmer Info */}
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <User className="w-4 h-4" />
-              <span>{product.profiles?.full_name}</span>
+              <span>{product.farmer_display_name || 'Unknown Farmer'}</span>
             </div>
 
             {/* Location */}
@@ -185,7 +182,7 @@ export const ProductCard = ({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium">Farmer:</span>
-                  <span>{product.profiles?.full_name}</span>
+                  <span>{product.farmer_display_name || 'Unknown Farmer'}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Location:</span>

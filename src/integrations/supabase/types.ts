@@ -76,6 +76,7 @@ export type Database = {
           created_at: string
           description: string | null
           expiry_date: string | null
+          farmer_display_name: string | null
           farmer_id: string
           harvest_date: string | null
           id: string
@@ -94,6 +95,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           expiry_date?: string | null
+          farmer_display_name?: string | null
           farmer_id: string
           harvest_date?: string | null
           id?: string
@@ -112,6 +114,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           expiry_date?: string | null
+          farmer_display_name?: string | null
           farmer_id?: string
           harvest_date?: string | null
           id?: string
@@ -248,38 +251,9 @@ export type Database = {
       }
     }
     Views: {
-      farmer_public_info: {
-        Row: {
-          city: string | null
-          full_name: string | null
-          state: string | null
-          user_id: string | null
-        }
-        Insert: {
-          city?: string | null
-          full_name?: string | null
-          state?: string | null
-          user_id?: string | null
-        }
-        Update: {
-          city?: string | null
-          full_name?: string | null
-          state?: string | null
-          user_id?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      get_farmer_public_info: {
-        Args: { farmer_user_id: string }
-        Returns: {
-          city: string
-          full_name: string
-          state: string
-          user_id: string
-        }[]
-      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
