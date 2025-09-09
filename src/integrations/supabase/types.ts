@@ -248,7 +248,27 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      farmer_public_info: {
+        Row: {
+          city: string | null
+          full_name: string | null
+          state: string | null
+          user_id: string | null
+        }
+        Insert: {
+          city?: string | null
+          full_name?: string | null
+          state?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          city?: string | null
+          full_name?: string | null
+          state?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       has_role: {
