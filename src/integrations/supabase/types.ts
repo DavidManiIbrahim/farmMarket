@@ -271,6 +271,15 @@ export type Database = {
       }
     }
     Functions: {
+      get_farmer_public_info: {
+        Args: { farmer_user_id: string }
+        Returns: {
+          city: string
+          full_name: string
+          state: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
