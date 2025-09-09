@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
+import { useCart } from '@/contexts/CartContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -37,6 +38,7 @@ interface Product {
 
 const BrowseProducts = () => {
   const { user } = useAuth();
+  const { addItem } = useCart();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -69,23 +71,14 @@ const BrowseProducts = () => {
 
   const handleAddToCart = async (product: Product) => {
     if (!user) return;
-    
-    try {
-      const { data, error } = await supabase.functions.invoke('create-payment', {
-        body: {
-          productId: product.id,
-          quantity: 1,
-          farmerId: product.farmer_id
-        }
-      });
-
-      if (error) throw error;
-
-      // Open Stripe checkout in a new tab
-      window.open(data.url, '_blank');
-    } catch (error: any) {
-      console.error('Error creating payment:', error);
-    }
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      unit: product.unit,
+      image_url: product.image_url,
+      farmer_id: product.farmer_id
+    }, 1);
   };
 
   const handleToggleWishlist = (productId: string) => {

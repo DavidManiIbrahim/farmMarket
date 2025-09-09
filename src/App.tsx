@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { CartProvider } from "@/contexts/CartContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 
@@ -14,8 +15,10 @@ const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
+const CartPage = lazy(() => import("./pages/buyer/Cart"));
 const BrowseProducts = lazy(() => import("./pages/buyer/BrowseProducts"));
 const AddProduct = lazy(() => import("./pages/farmer/AddProduct"));
+const FarmerProducts = lazy(() => import("./pages/farmer/FarmerProducts"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 
 const queryClient = new QueryClient();
@@ -29,6 +32,7 @@ const LoadingFallback = () => (
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
+      <CartProvider>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -56,7 +60,9 @@ const App = () => (
                 } 
               />
             <Route path="/buyer/products" element={<ProtectedRoute allowedRoles={['seller']}><BrowseProducts /></ProtectedRoute>} />
+            <Route path="/buyer/cart" element={<ProtectedRoute allowedRoles={['seller']}><CartPage /></ProtectedRoute>} />
             <Route path="/farmer/add-product" element={<ProtectedRoute requiredRole="farmer"><AddProduct /></ProtectedRoute>} />
+            <Route path="/farmer/products" element={<ProtectedRoute requiredRole="farmer"><FarmerProducts /></ProtectedRoute>} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route 
                 path="/farmer/*" 
@@ -87,6 +93,7 @@ const App = () => (
           </Suspense>
         </BrowserRouter>
       </TooltipProvider>
+      </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
 );

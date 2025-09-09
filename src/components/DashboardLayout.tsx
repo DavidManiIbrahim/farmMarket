@@ -46,6 +46,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       roles: ['seller']
     },
     {
+      title: 'Cart',
+      icon: ShoppingCart,
+      href: '/buyer/cart',
+      roles: ['seller']
+    },
+    {
       title: 'My Products',
       icon: Package,
       href: '/farmer/products',

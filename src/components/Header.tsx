@@ -35,9 +35,7 @@ export const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <a href="#marketplace" className="text-foreground hover:text-primary transition-colors">
-            Marketplace
-          </a>
+          
           <a href="#farmers" className="text-foreground hover:text-primary transition-colors">
             For Farmers
           </a>

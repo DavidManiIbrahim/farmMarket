@@ -1,13 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Package, Trash2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import DashboardLayout from '@/components/DashboardLayout';
+import { Package, Trash2 } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -17,111 +15,73 @@ interface Product {
   price: number;
   unit: string;
   stock_quantity: number;
-  image_url?: string;
+  image_url?: string | null;
   is_organic: boolean;
-  harvest_date?: string;
-  expiry_date?: string;
   location: string;
   is_available: boolean;
   created_at: string;
 }
 
-const FarmerDashboard = () => {
-  const { user, profile } = useAuth();
-  const { toast } = useToast();
+const FarmerProducts = () => {
+  const { user } = useAuth();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [user]);
 
   const fetchProducts = async () => {
     if (!user) return;
-
     try {
       const { data, error } = await supabase
         .from('products')
         .select('*')
         .eq('farmer_id', user.id)
         .order('created_at', { ascending: false });
-
       if (error) throw error;
-      setProducts(data || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
+      setProducts((data as any) || []);
+    } catch (e) {
+      console.error('Error loading products', e);
     } finally {
       setLoading(false);
     }
   };
 
-  
+  const toggleAvailability = async (product: Product) => {
+    try {
+      const { error } = await supabase
+        .from('products')
+        .update({ is_available: !product.is_available })
+        .eq('id', product.id);
+      if (error) throw error;
+      setProducts(prev => prev.map(p => p.id === product.id ? { ...p, is_available: !p.is_available } : p));
+    } catch (e) {
+      console.error('Error updating availability', e);
+    }
+  };
 
-  const handleDeleteProduct = async (productId: string) => {
+  const deleteProduct = async (productId: string) => {
     try {
       const { error } = await supabase
         .from('products')
         .delete()
         .eq('id', productId);
-
       if (error) throw error;
-
-      toast({
-        title: "Product Deleted",
-        description: "Product removed successfully."
-      });
-      fetchProducts();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive"
-      });
+      setProducts(prev => prev.filter(p => p.id !== productId));
+    } catch (e) {
+      console.error('Error deleting product', e);
     }
-  };
-
-  const toggleProductAvailability = async (productId: string, isAvailable: boolean) => {
-    try {
-      const { error } = await supabase
-        .from('products')
-        .update({ is_available: !isAvailable })
-        .eq('id', productId);
-
-      if (error) throw error;
-
-      fetchProducts();
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive"
-      });
-    }
-  };
-
-  const stats = {
-    totalProducts: products.length,
-    availableProducts: products.filter(p => p.is_available).length,
-    totalValue: products.reduce((sum, p) => sum + (p.price * p.stock_quantity), 0)
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Farmer Dashboard</h1>
-            <p className="text-muted-foreground">Welcome back, {profile?.full_name || 'Farmer'}!</p>
-          </div>
-          
-          {/* Add Product removed */}
+        <div>
+          <h1 className="text-3xl font-bold text-foreground">My Products</h1>
+          <p className="text-muted-foreground">Manage the products you have created</p>
         </div>
 
-        {/* Analytics Dashboard */}
-        <AnalyticsDashboard userRole="farmer" />
-
-        {/* Products List */}
         <Card>
           <CardHeader>
             <CardTitle>Your Products</CardTitle>
@@ -144,24 +104,19 @@ const FarmerDashboard = () => {
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-semibold text-foreground">{product.name}</h3>
                         <div className="flex gap-1">
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => toggleProductAvailability(product.id, product.is_available)}
-                          >
-                            <Badge variant={product.is_available ? "default" : "secondary"}>
-                              {product.is_available ? "Live" : "Hidden"}
+                          <Button size="sm" variant="ghost" onClick={() => toggleAvailability(product)}>
+                            <Badge variant={product.is_available ? 'default' : 'secondary'}>
+                              {product.is_available ? 'Live' : 'Hidden'}
                             </Badge>
                           </Button>
-                          <Button
-                            size="icon"
-                            variant="ghost"
-                            onClick={() => handleDeleteProduct(product.id)}
-                          >
+                          <Button size="icon" variant="ghost" onClick={() => deleteProduct(product.id)}>
                             <Trash2 className="w-4 h-4 text-destructive" />
                           </Button>
                         </div>
                       </div>
+                      {product.image_url && (
+                        <img src={product.image_url} alt={product.name} className="w-full h-40 object-cover rounded mb-2" />
+                      )}
                       <p className="text-sm text-muted-foreground mb-2">{product.description}</p>
                       <div className="space-y-1 text-sm">
                         <p><span className="font-medium">Category:</span> {product.category}</p>
@@ -184,4 +139,6 @@ const FarmerDashboard = () => {
   );
 };
 
-export default FarmerDashboard;
+export default FarmerProducts;
+
+

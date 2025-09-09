@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,8 +15,9 @@ import {
   Star
 } from 'lucide-react';
 import { ProductCard } from '@/components/buyer/ProductCard';
+import { useCart } from '@/contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
-import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
+const AnalyticsDashboard = lazy(() => import('@/components/analytics/AnalyticsDashboard'));
 import DashboardLayout from '@/components/DashboardLayout';
 
 interface Product {
@@ -48,6 +49,7 @@ interface Order {
 
 const BuyerDashboard = () => {
   const { user, profile, userRole } = useAuth();
+  const { addItem } = useCart();
   const navigate = useNavigate();
   const [recentProducts, setRecentProducts] = useState<Product[]>([]);
   const [recentOrders, setRecentOrders] = useState<Order[]>([]);
@@ -67,52 +69,59 @@ const BuyerDashboard = () => {
     if (!user) return;
 
     try {
-      // Fetch recent products
-      const { data: productsData, error: productsError } = await supabase
-        .from('products')
-        .select(`
-          *,
-          profiles:farmer_id (
-            full_name,
-            phone
-          )
-        `)
-        .eq('is_available', true)
-        .order('created_at', { ascending: false })
-        .limit(6);
+      // Fetch recent products and orders in parallel
+      const [productsResult, ordersResult] = await Promise.all([
+        supabase
+          .from('products')
+          .select(`
+            id,
+            name,
+            description,
+            category,
+            price,
+            unit,
+            stock_quantity,
+            image_url,
+            is_organic,
+            harvest_date,
+            location,
+            farmer_id,
+            profiles:farmer_id (
+              full_name,
+              phone
+            )
+          `)
+          .eq('is_available', true)
+          .order('created_at', { ascending: false })
+          .limit(6),
+        supabase
+          .from('orders')
+          .select(`
+            id,
+            status,
+            total_price,
+            created_at,
+            products (id, name)
+          `)
+          .eq('buyer_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(5)
+      ]);
 
-      if (productsError) {
-        console.error('Error fetching products:', productsError);
-      }
+      const productsData = productsResult.data as any[] | null;
+      const ordersData = ordersResult.data as any[] | null;
 
-      // Fetch recent orders
-      const { data: ordersData } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          products (*)
-        `)
-        .eq('buyer_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-      // Calculate stats
-      const { data: allOrders } = await supabase
-        .from('orders')
-        .select('status, total_price')
-        .eq('buyer_id', user.id);
-
-      const totalOrders = allOrders?.length || 0;
-      const totalSpent = allOrders?.reduce((sum, order) => sum + order.total_price, 0) || 0;
-      const pendingOrders = allOrders?.filter(order => order.status === 'pending').length || 0;
+      const totalOrders = ordersData?.length || 0;
+      const totalSpent = ordersData?.reduce((sum: number, order: any) => sum + Number(order.total_price || 0), 0) || 0;
+      const pendingOrders = ordersData?.filter((order: any) => order.status === 'pending').length || 0;
 
       setRecentProducts((productsData || []) as any);
-      setRecentOrders(ordersData as any || []);
+      setRecentOrders((ordersData || []) as any);
       setStats({
         totalOrders,
         totalSpent,
         pendingOrders,
-        favoriteProducts: 0 // TODO: Implement wishlist count
+        favoriteProducts: 0
       });
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
@@ -122,8 +131,14 @@ const BuyerDashboard = () => {
   };
 
   const handleAddToCart = (product: Product) => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product);
+    addItem({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      unit: product.unit,
+      image_url: product.image_url,
+      farmer_id: product.farmer_id
+    }, 1);
   };
 
   const handleToggleWishlist = (productId: string) => {
@@ -159,8 +174,20 @@ const BuyerDashboard = () => {
           </Button>
         </div>
 
-        {/* Analytics Dashboard */}
-        <AnalyticsDashboard userRole={userRole?.role || 'seller'} />
+        {/* Analytics Dashboard (lazy-loaded) */}
+        <Suspense fallback={
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[...Array(4)].map((_, i) => (
+              <Card key={i} className="animate-pulse">
+                <CardContent className="p-6">
+                  <div className="h-16 bg-muted rounded"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        }>
+          <AnalyticsDashboard userRole={userRole?.role || 'buyer'} />
+        </Suspense>
 
         {/* Recent Orders */}
         <Card>

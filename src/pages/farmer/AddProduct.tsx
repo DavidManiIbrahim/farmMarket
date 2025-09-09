@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -10,8 +10,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Calendar } from '@/components/ui/calendar';
+const CalendarLazy = lazy(() => import('@/components/ui/calendar').then(m => ({ default: m.Calendar })));
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { supabase as supabaseClient } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Leaf, Package, DollarSign, Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { format } from 'date-fns';
@@ -39,6 +40,7 @@ const AddProduct = () => {
     location: '',
     image_url: ''
   });
+  const [imageFile, setImageFile] = useState<File | null>(null);
   
   const [harvestDate, setHarvestDate] = useState<Date | undefined>(new Date());
 
@@ -112,6 +114,26 @@ const AddProduct = () => {
     setLoading(true);
 
     try {
+      // If a file was selected, upload to Supabase Storage and get public URL
+      let uploadedImageUrl: string | null = null;
+      if (imageFile) {
+        const fileExt = imageFile.name.split('.').pop();
+        const fileName = `${user?.id}-${Date.now()}.${fileExt}`;
+        const filePath = `products/${fileName}`;
+
+        const { error: uploadError } = await supabaseClient.storage
+          .from('product-images')
+          .upload(filePath, imageFile, {
+            cacheControl: '3600',
+            upsert: false
+          });
+        if (uploadError) throw uploadError;
+
+        const { data: publicUrlData } = supabaseClient.storage
+          .from('product-images')
+          .getPublicUrl(filePath);
+        uploadedImageUrl = publicUrlData.publicUrl;
+      }
       // Get the selected category name for the category text field (backward compatibility)
       const selectedCategory = categories.find(cat => cat.id === formData.category_id);
 
@@ -130,7 +152,7 @@ const AddProduct = () => {
             is_organic: formData.is_organic,
             harvest_date: harvestDate,
             location: formData.location,
-            image_url: formData.image_url || null,
+            image_url: uploadedImageUrl || formData.image_url || null,
             is_available: true
           }
         ]);
@@ -326,14 +348,16 @@ const AddProduct = () => {
                       </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={harvestDate}
-                        onSelect={setHarvestDate}
-                        disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
-                        initialFocus
-                        className="p-3 pointer-events-auto"
-                      />
+                      <Suspense fallback={<div className="p-3 text-sm text-muted-foreground">Loading calendar...</div>}>
+                        <CalendarLazy
+                          mode="single"
+                          selected={harvestDate}
+                          onSelect={setHarvestDate}
+                          disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
+                          initialFocus
+                          className="p-3 pointer-events-auto"
+                        />
+                      </Suspense>
                     </PopoverContent>
                   </Popover>
                 </div>
@@ -349,15 +373,29 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image_url">Image URL</Label>
-                <Input
-                  id="image_url"
-                  type="url"
-                  value={formData.image_url}
-                  onChange={(e) => handleInputChange('image_url', e.target.value)}
-                  placeholder="https://example.com/image.jpg"
-                />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="image_file">Product Image</Label>
+                  <Input
+                    id="image_file"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setImageFile(file);
+                    }}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="image_url">Or Image URL</Label>
+                  <Input
+                    id="image_url"
+                    type="url"
+                    value={formData.image_url}
+                    onChange={(e) => handleInputChange('image_url', e.target.value)}
+                    placeholder="https://example.com/image.jpg"
+                  />
+                </div>
               </div>
 
               <div className="flex items-center space-x-2">
