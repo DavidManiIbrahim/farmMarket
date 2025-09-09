@@ -36,9 +36,7 @@ const AddProduct = () => {
     unit: 'kg',
     stock_quantity: '',
     is_organic: false,
-    harvest_date: new Date(),
-    location: '',
-    image_url: ''
+    location: ''
   });
   const [imageFile, setImageFile] = useState<File | null>(null);
   
@@ -152,7 +150,7 @@ const AddProduct = () => {
             is_organic: formData.is_organic,
             harvest_date: harvestDate,
             location: formData.location,
-            image_url: uploadedImageUrl || formData.image_url || null,
+            image_url: uploadedImageUrl,
             is_available: true
           }
         ]);
@@ -373,29 +371,17 @@ const AddProduct = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="image_file">Product Image</Label>
-                  <Input
-                    id="image_file"
-                    type="file"
-                    accept="image/*"
-                    onChange={(e) => {
-                      const file = e.target.files?.[0] || null;
-                      setImageFile(file);
-                    }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="image_url">Or Image URL</Label>
-                  <Input
-                    id="image_url"
-                    type="url"
-                    value={formData.image_url}
-                    onChange={(e) => handleInputChange('image_url', e.target.value)}
-                    placeholder="https://example.com/image.jpg"
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="image_file">Product Image</Label>
+                <Input
+                  id="image_file"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setImageFile(file);
+                  }}
+                />
               </div>
 
               <div className="flex items-center space-x-2">

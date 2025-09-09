@@ -3,10 +3,51 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { Trash2 } from 'lucide-react';
+import { createStripeSession } from '@/lib/stripe-server';
+import { sendNotification } from '@/lib/notifications';
+import { useToast } from '@/hooks/use-toast';
 
 const CartPage = () => {
   const { items, updateQuantity, removeItem, clear, totalItems, totalPrice } = useCart();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
+    if (!user) return;
+    setLoading(true);
+
+    try {
+      // Create Stripe checkout session
+      const session = await createStripeSession(items, user.id);
+
+      // Send notifications to farmers
+      const uniqueFarmers = [...new Set(items.map(item => item.farmer_id))];
+      for (const farmerId of uniqueFarmers) {
+        await sendNotification({
+          userId: farmerId,
+          title: 'New Purchase Request',
+          message: `A buyer has requested to purchase your products`,
+          type: 'request',
+          relatedId: session.id
+        });
+      }
+
+      // Redirect to Stripe checkout
+      window.location.href = session.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      toast({
+        title: 'Error',
+        description: 'Failed to process checkout. Please try again.',
+        variant: 'destructive'
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <DashboardLayout>
@@ -75,8 +116,12 @@ const CartPage = () => {
                   <span className="text-muted-foreground">Total</span>
                   <span className="font-semibold">${totalPrice.toFixed(2)}</span>
                 </div>
-                <Button className="w-full mt-4" disabled={items.length === 0}>
-                  Checkout
+                <Button 
+                  className="w-full mt-4" 
+                  disabled={items.length === 0 || loading}
+                  onClick={handleCheckout}
+                >
+                  {loading ? 'Processing...' : 'Checkout'}
                 </Button>
               </div>
             </CardContent>

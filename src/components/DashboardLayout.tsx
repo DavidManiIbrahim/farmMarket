@@ -51,18 +51,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       roles: ['seller']
     },
     {
-      title: 'Orders',
-      icon: ShoppingCart,
-      href: '/buyer/orders',
-      roles: ['seller']
-    },
-    {
-      title: 'Profile',
-      icon: User,
-      href: '/profile',
-      roles: ['farmer', 'seller', 'admin']
-    },
-    {
       title: 'My Products',
       icon: Package,
       href: '/farmer/products',
@@ -75,15 +63,27 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       roles: ['farmer']
     },
     {
+      title: 'Requests',
+      icon: ShoppingCart,
+      href: '/farmer/requests',
+      roles: ['farmer']
+    },
+    {
       title: 'Users',
       icon: Users,
-      href: '/users',
+      href: '/admin/users',
+      roles: ['admin']
+    },
+    {
+      title: 'Products',
+      icon: Package,
+      href: '/admin/products',
       roles: ['admin']
     },
     {
       title: 'Analytics',
       icon: BarChart3,
-      href: '/analytics',
+      href: '/admin/analytics',
       roles: ['admin']
     }
   ];

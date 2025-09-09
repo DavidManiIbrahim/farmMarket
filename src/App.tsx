@@ -21,8 +21,11 @@ const OrderDetailsPage = lazy(() => import("./pages/buyer/OrderDetails"));
 const BrowseProducts = lazy(() => import("./pages/buyer/BrowseProducts"));
 const AddProduct = lazy(() => import("./pages/farmer/AddProduct"));
 const FarmerProducts = lazy(() => import("./pages/farmer/FarmerProducts"));
+const Requests = lazy(() => import("./pages/farmer/Requests"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const ProfilePage = lazy(() => import("./pages/Profile"));
+const AdminUsers = lazy(() => import("./pages/admin/Users"));
+const AdminProducts = lazy(() => import("./pages/admin/Products"));
 
 const queryClient = new QueryClient();
 
@@ -76,6 +79,7 @@ const App = () => (
             <Route path="/buyer/orders/:id" element={<ProtectedRoute allowedRoles={['seller']}><OrderDetailsPage /></ProtectedRoute>} />
             <Route path="/farmer/add-product" element={<ProtectedRoute requiredRole="farmer"><AddProduct /></ProtectedRoute>} />
             <Route path="/farmer/products" element={<ProtectedRoute requiredRole="farmer"><FarmerProducts /></ProtectedRoute>} />
+            <Route path="/farmer/requests" element={<ProtectedRoute requiredRole="farmer"><Requests /></ProtectedRoute>} />
             <Route path="/payment-success" element={<PaymentSuccess />} />
               <Route 
                 path="/farmer/*" 
@@ -92,6 +96,23 @@ const App = () => (
                     <BuyerDashboard />
                   </ProtectedRoute>
                 } 
+              />
+              {/* Admin routes */}
+              <Route 
+                path="/admin/users" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminUsers />
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/admin/products" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminProducts />
+                  </ProtectedRoute>
+                }
               />
               <Route 
                 path="/admin/*" 
