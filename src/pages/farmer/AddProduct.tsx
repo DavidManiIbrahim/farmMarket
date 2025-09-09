@@ -35,11 +35,12 @@ const AddProduct = () => {
     unit: 'kg',
     stock_quantity: '',
     is_organic: false,
+    harvest_date: new Date(),
     location: '',
     image_url: ''
   });
   
-  const [harvestDate, setHarvestDate] = useState<Date>();
+  const [harvestDate, setHarvestDate] = useState<Date | undefined>(new Date());
 
   // Fetch categories on component mount
   useEffect(() => {
@@ -127,7 +128,7 @@ const AddProduct = () => {
             unit: formData.unit,
             stock_quantity: parseInt(formData.stock_quantity),
             is_organic: formData.is_organic,
-            harvest_date: harvestDate ? format(harvestDate, 'yyyy-MM-dd') : null,
+            harvest_date: harvestDate,
             location: formData.location,
             image_url: formData.image_url || null,
             is_available: true
