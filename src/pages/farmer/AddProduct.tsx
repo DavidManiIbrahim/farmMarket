@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
@@ -11,8 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { Leaf, Package, DollarSign, Calendar as CalendarIcon } from 'lucide-react';
+import { Leaf, Package, DollarSign, Calendar as CalendarIcon, Plus } from 'lucide-react';
 import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -22,33 +23,42 @@ const AddProduct = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([]);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [showNewCategoryDialog, setShowNewCategoryDialog] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category: '',
+    category_id: '',
     price: '',
     unit: 'kg',
     stock_quantity: '',
     is_organic: false,
-    harvest_date: '',
     location: '',
     image_url: ''
   });
   
   const [harvestDate, setHarvestDate] = useState<Date>();
 
-  const categories = [
-    'Vegetables',
-    'Fruits',
-    'Herbs',
-    'Leafy Greens',
-    'Root Vegetables',
-    'Grains',
-    'Dairy',
-    'Meat',
-    'Other'
-  ];
+  // Fetch categories on component mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .select('id, name')
+        .order('name');
+      
+      if (error) throw error;
+      setCategories(data || []);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
 
   const units = [
     'lb',
@@ -62,6 +72,38 @@ const AddProduct = () => {
     'oz'
   ];
 
+  const createNewCategory = async () => {
+    if (!newCategoryName.trim()) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('categories')
+        .insert([{ name: newCategoryName.trim() }])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update categories list and select the new category
+      await fetchCategories();
+      setFormData(prev => ({ ...prev, category_id: data.id }));
+      setNewCategoryName('');
+      setShowNewCategoryDialog(false);
+
+      toast({
+        title: "Category Created!",
+        description: `"${data.name}" has been added to categories.`
+      });
+    } catch (error: any) {
+      console.error('Error creating category:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to create category. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
@@ -69,6 +111,9 @@ const AddProduct = () => {
     setLoading(true);
 
     try {
+      // Get the selected category name for the category text field (backward compatibility)
+      const selectedCategory = categories.find(cat => cat.id === formData.category_id);
+
       const { error } = await supabase
         .from('products')
         .insert([
@@ -76,12 +121,13 @@ const AddProduct = () => {
             farmer_id: user.id,
             name: formData.name,
             description: formData.description,
-            category: formData.category,
+            category: selectedCategory?.name || '', // Keep for backward compatibility
+            category_id: formData.category_id,
             price: parseFloat(formData.price),
             unit: formData.unit,
             stock_quantity: parseInt(formData.stock_quantity),
             is_organic: formData.is_organic,
-            harvest_date: harvestDate ? harvestDate.toISOString().split('T')[0] : null,
+            harvest_date: harvestDate ? format(harvestDate, 'yyyy-MM-dd') : null,
             location: formData.location,
             image_url: formData.image_url || null,
             is_available: true
@@ -148,21 +194,54 @@ const AddProduct = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="category">Category *</Label>
-                  <Select 
-                    value={formData.category} 
-                    onValueChange={(value) => handleInputChange('category', value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select category" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {categories.map(category => (
-                        <SelectItem key={category} value={category}>
-                          {category}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <div className="flex gap-2">
+                    <Select 
+                      value={formData.category_id} 
+                      onValueChange={(value) => handleInputChange('category_id', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.map(category => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Dialog open={showNewCategoryDialog} onOpenChange={setShowNewCategoryDialog}>
+                      <DialogTrigger asChild>
+                        <Button type="button" variant="outline" size="icon">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Create New Category</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div>
+                            <Label htmlFor="new-category">Category Name</Label>
+                            <Input
+                              id="new-category"
+                              value={newCategoryName}
+                              onChange={(e) => setNewCategoryName(e.target.value)}
+                              placeholder="e.g., Tropical Fruits"
+                            />
+                          </div>
+                          <div className="flex gap-2">
+                            <Button onClick={createNewCategory} disabled={!newCategoryName.trim()}>
+                              Create Category
+                            </Button>
+                            <Button variant="outline" onClick={() => setShowNewCategoryDialog(false)}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
               </div>
 
@@ -252,7 +331,7 @@ const AddProduct = () => {
                         onSelect={setHarvestDate}
                         disabled={(date) => date > new Date() || date < new Date("1900-01-01")}
                         initialFocus
-                        className="pointer-events-auto"
+                        className="p-3 pointer-events-auto"
                       />
                     </PopoverContent>
                   </Popover>

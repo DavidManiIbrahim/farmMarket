@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           buyer_id: string
@@ -73,6 +94,7 @@ export type Database = {
       products: {
         Row: {
           category: string
+          category_id: string | null
           created_at: string
           description: string | null
           expiry_date: string | null
@@ -92,6 +114,7 @@ export type Database = {
         }
         Insert: {
           category: string
+          category_id?: string | null
           created_at?: string
           description?: string | null
           expiry_date?: string | null
@@ -111,6 +134,7 @@ export type Database = {
         }
         Update: {
           category?: string
+          category_id?: string | null
           created_at?: string
           description?: string | null
           expiry_date?: string | null
@@ -128,7 +152,15 @@ export type Database = {
           unit?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "products_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

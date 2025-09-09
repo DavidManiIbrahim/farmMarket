@@ -81,7 +81,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
     userRole && item.roles.includes(userRole.role)
   );
 
-  const Sidebar = ({ className = '' }: { togglclassName?: string }) => (
+  const Sidebar = ({ className = '' }: { className?: string }) => (
     <div className={cn('flex flex-col h-full bg-card border-r border-border', className)}>
       <div className="p-6 border-b border-border">
         <div className="flex items-center space-x-3">
