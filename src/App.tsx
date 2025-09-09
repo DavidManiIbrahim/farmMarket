@@ -16,10 +16,13 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const CartPage = lazy(() => import("./pages/buyer/Cart"));
+const OrdersPage = lazy(() => import("./pages/buyer/Orders"));
+const OrderDetailsPage = lazy(() => import("./pages/buyer/OrderDetails"));
 const BrowseProducts = lazy(() => import("./pages/buyer/BrowseProducts"));
 const AddProduct = lazy(() => import("./pages/farmer/AddProduct"));
 const FarmerProducts = lazy(() => import("./pages/farmer/FarmerProducts"));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const ProfilePage = lazy(() => import("./pages/Profile"));
 
 const queryClient = new QueryClient();
 
@@ -49,6 +52,14 @@ const App = () => (
                   </ProtectedRoute>
                 } 
               />
+              <Route 
+                path="/profile"
+                element={
+                  <ProtectedRoute>
+                    <ProfilePage />
+                  </ProtectedRoute>
+                }
+              />
               
               {/* Buyer routes */}
               <Route 
@@ -61,6 +72,8 @@ const App = () => (
               />
             <Route path="/buyer/products" element={<ProtectedRoute allowedRoles={['seller']}><BrowseProducts /></ProtectedRoute>} />
             <Route path="/buyer/cart" element={<ProtectedRoute allowedRoles={['seller']}><CartPage /></ProtectedRoute>} />
+            <Route path="/buyer/orders" element={<ProtectedRoute allowedRoles={['seller']}><OrdersPage /></ProtectedRoute>} />
+            <Route path="/buyer/orders/:id" element={<ProtectedRoute allowedRoles={['seller']}><OrderDetailsPage /></ProtectedRoute>} />
             <Route path="/farmer/add-product" element={<ProtectedRoute requiredRole="farmer"><AddProduct /></ProtectedRoute>} />
             <Route path="/farmer/products" element={<ProtectedRoute requiredRole="farmer"><FarmerProducts /></ProtectedRoute>} />
             <Route path="/payment-success" element={<PaymentSuccess />} />

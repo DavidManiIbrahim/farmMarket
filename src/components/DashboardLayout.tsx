@@ -8,7 +8,6 @@ import {
   Package, 
   ShoppingCart, 
   Users, 
-  Settings, 
   LogOut, 
   User,
   BarChart3,
@@ -52,6 +51,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       roles: ['seller']
     },
     {
+      title: 'Orders',
+      icon: ShoppingCart,
+      href: '/buyer/orders',
+      roles: ['seller']
+    },
+    {
+      title: 'Profile',
+      icon: User,
+      href: '/profile',
+      roles: ['farmer', 'seller', 'admin']
+    },
+    {
       title: 'My Products',
       icon: Package,
       href: '/farmer/products',
@@ -62,12 +73,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       icon: Package,
       href: '/farmer/add-product',
       roles: ['farmer']
-    },
-    {
-      title: 'Orders',
-      icon: ShoppingCart,
-      href: '/orders',
-      roles: ['farmer', 'seller']
     },
     {
       title: 'Users',
@@ -139,15 +144,6 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             </p>
           </div>
         </div>
-        
-        <Button
-          variant="ghost"
-          className="w-full justify-start text-left"
-          onClick={() => navigate('/profile')}
-        >
-          <Settings className="w-4 h-4 mr-3" />
-          Settings
-        </Button>
         
         <Button
           variant="ghost"
