@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import { stripePromise } from '@/lib/stripe';
 
 interface CartItem {
   id: string;
@@ -46,7 +48,10 @@ export const ShoppingCart = ({
     onUpdateQuantity(itemId, newQuantity);
   };
 
-  const handleCheckout = () => {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(false);
+
+  const handleCheckout = async () => {
     if (items.length === 0) {
       toast({
         title: "Empty Cart",
@@ -55,7 +60,59 @@ export const ShoppingCart = ({
       });
       return;
     }
-    onCheckout(items);
+
+    if (!user) {
+      toast({
+        title: "Please login",
+        description: "You need to be logged in to checkout.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Create checkout session
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/create-checkout`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            items,
+            buyerId: user.id,
+          }),
+        }
+      );
+
+      const { sessionId, error } = await response.json();
+
+      if (error) throw new Error(error);
+
+      // Load Stripe and redirect to checkout
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error('Stripe failed to load');
+
+      const { error: stripeError } = await stripe.redirectToCheckout({
+        sessionId,
+      });
+
+      if (stripeError) {
+        throw stripeError;
+      }
+    } catch (error: any) {
+      console.error('Checkout error:', error);
+      toast({
+        title: "Checkout Failed",
+        description: error.message || "There was a problem processing your checkout. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (items.length === 0) {
@@ -170,8 +227,9 @@ export const ShoppingCart = ({
           onClick={handleCheckout}
           className="w-full"
           size="lg"
+          disabled={loading}
         >
-          Proceed to Checkout
+          {loading ? 'Processing...' : `Checkout Now • $${totalAmount.toFixed(2)}`}
         </Button>
       </CardContent>
     </Card>

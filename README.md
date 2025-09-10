@@ -1,73 +1,240 @@
-# Welcome to your Lovable project
+🌱 Rural Grow Connect
 
-## Project info
+A marketplace platform connecting rural farmers with buyers, facilitating direct trade of agricultural products.
 
-**URL**: https://lovable.dev/projects/90c51318-ecff-4862-8ae3-8f75b1d7b17a
+1. Overview
 
-## How can I edit this code?
+Rural Grow Connect is a full-featured e-commerce platform designed to empower farmers and streamline agricultural product distribution. The platform supports multiple user roles, secure transactions, and real-time inventory management.
 
-There are several ways of editing your application.
+2. Features
+👩‍🌾 For Farmers
 
-**Use Lovable**
+Add and manage products (name, description, price, stock, etc.)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/90c51318-ecff-4862-8ae3-8f75b1d7b17a) and start prompting.
+Upload product images (JPEG, PNG, WebP, GIF – up to 5MB)
 
-Changes made via Lovable will be committed automatically to this repo.
+Edit product details via intuitive dialogs
 
-**Use your preferred IDE**
+Toggle product availability
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Track inventory levels
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Manage organic certification
 
-Follow these steps:
+🛒 For Buyers
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Browse and discover products
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Filter and search functionality
 
-# Step 3: Install the necessary dependencies.
-npm i
+Add items to cart
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Secure checkout with Stripe
+
+Track orders and view purchase history
+
+🛠️ For Administrators
+
+User management
+
+Product and category oversight
+
+System monitoring
+
+🌍 General Features
+
+Authentication & Authorization
+
+Secure login
+
+Role-based access control
+
+Protected routes
+
+Secure file uploads
+
+User Interface
+
+Responsive design
+
+Modern UI components
+
+Real-time updates
+
+Toast notifications
+
+Form validation & loading states
+
+3. Technical Stack
+Frontend
+
+Framework: React (TypeScript)
+
+Build Tool: Vite
+
+UI Components: shadcn/ui
+
+Styling: Tailwind CSS
+
+State Management: React Context
+
+Data Fetching: TanStack Query
+
+Forms: React Hook Form
+
+Routing: React Router DOM
+
+Backend
+
+Database & Auth: Supabase
+
+PostgreSQL database
+
+Row Level Security (RLS)
+
+Storage buckets for images
+
+Real-time subscriptions
+
+Payment Processing: Stripe
+
+Key Dependencies
+
+date-fns: Date manipulation
+
+lucide-react: Icon system
+
+zod: Schema validation
+
+clsx / tailwind-merge: Utility styling
+
+4. Architecture
+Database Structure
+
+Users: Authentication handled by Supabase
+
+Products
+
+Categories
+
+Orders
+
+Cart Items
+
+Storage Buckets
+
+product-images
+
+Public bucket for product images
+
+5MB file size limit
+
+Supports JPEG, PNG, WebP, GIF
+
+User-specific folders with RLS
+
+Security
+
+Row Level Security (RLS) policies
+
+Role-based access control
+
+Secure file uploads
+
+Protected API routes
+
+5. Getting Started
+Prerequisites
+
+Node.js 16+
+
+npm or yarn
+
+Supabase account
+
+Stripe account
+
+Environment Setup
+
+Clone the repository
+
+git clone https://github.com/DavidManiIbrahim/rural-grow-connect.git
+cd rural-grow-connect
+
+
+Install dependencies
+
+npm install
+
+
+Create a .env file with:
+
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_STRIPE_PUBLIC_KEY=your_stripe_public_key
+
+
+Run database migrations
+
+npm run supabase:migration:up
+
+
+Start the dev server
+
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+Supabase Setup
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Create a new Supabase project
 
-**Use GitHub Codespaces**
+Run migrations from supabase/migrations
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+Set up storage buckets:
 
-## What technologies are used for this project?
+Create product-images bucket
 
-This project is built with:
+Enable RLS policies
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Stripe Setup
 
-## How can I deploy this project?
+Create a Stripe account
 
-Simply open [Lovable](https://lovable.dev/projects/90c51318-ecff-4862-8ae3-8f75b1d7b17a) and click on Share -> Publish.
+Configure webhook endpoints
 
-## Can I connect a custom domain to my Lovable project?
+Set up product prices
 
-Yes, you can!
+Add Stripe keys to environment variables
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+6. Deployment
+Frontend Deployment
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Build the project
+
+npm run build
+
+
+Deploy the dist folder to your hosting provider
+
+Backend Deployment
+
+Push Supabase migrations
+
+npm run supabase:migration:up
+
+
+Configure environment variables on your hosting platform
+
+7. Contributing
+
+Fork the repository
+
+Create a new branch
+
+Make your changes
+
+Submit a pull request
+
+8. License
+
+This project is licensed under the MIT License – see the LICENSE
+ file for details.
