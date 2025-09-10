@@ -70,7 +70,7 @@ const ProfilePage = () => {
 
       // Start upload
       const { error: uploadError, data } = await supabase.storage
-        .from('profile-images')
+        .from('avatars')
         .upload(filePath, file, {
           cacheControl: '3600',
           upsert: true
@@ -80,7 +80,7 @@ const ProfilePage = () => {
 
       // Get public URL
       const { data: publicUrlData } = supabase.storage
-        .from('profile-images')
+        .from('avatars')
         .getPublicUrl(filePath);
 
       // Update form
