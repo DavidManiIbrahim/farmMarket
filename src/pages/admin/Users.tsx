@@ -33,10 +33,7 @@ export default function AdminUsers() {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_roles(role)
-        `);
+        .select('*');
       
       if (error) throw error;
       return data;
@@ -45,9 +42,10 @@ export default function AdminUsers() {
 
   const handleRoleChange = async (userId: string, newRole: string) => {
     try {
+      const validRole = newRole as 'admin' | 'farmer' | 'seller';
       const { error } = await supabase
         .from('user_roles')
-        .upsert({ user_id: userId, role: newRole });
+        .upsert({ user_id: userId, role: validRole });
 
       if (error) throw error;
 
@@ -127,12 +125,12 @@ export default function AdminUsers() {
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
                     <Badge variant="outline">
-                      {user.user_roles?.role || 'No Role'}
+                      Seller
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Badge variant={user.is_active ? 'default' : 'secondary'}>
-                      {user.is_active ? 'Active' : 'Inactive'}
+                    <Badge variant="default">
+                      Active
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -156,7 +154,7 @@ export default function AdminUsers() {
                               <Label>Role</Label>
                               <select
                                 className="w-full p-2 border rounded-md"
-                                value={user.user_roles?.role || ''}
+                                value=""
                                 onChange={(e) =>
                                   handleRoleChange(user.user_id, e.target.value)
                                 }

@@ -2,7 +2,7 @@ import { supabase } from '@/integrations/supabase/client';
 import Stripe from 'stripe';
 
 const stripe = new Stripe(import.meta.env.VITE_STRIPE_SECRET_KEY, {
-  apiVersion: '2023-10-16'
+  apiVersion: '2025-08-27.basil'
 });
 
 export const createStripeSession = async (items: any[], buyerId: string) => {

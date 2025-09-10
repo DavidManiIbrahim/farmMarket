@@ -143,7 +143,7 @@ const AddProduct = () => {
             unit: formData.unit,
             stock_quantity: parseInt(formData.stock_quantity),
             is_organic: formData.is_organic,
-            harvest_date: harvestDate,
+            harvest_date: harvestDate?.toISOString(),
             location: formData.location,
             image_url: uploadedImageUrl,
             is_available: true

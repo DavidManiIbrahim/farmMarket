@@ -17,17 +17,15 @@ import DashboardLayout from '@/components/DashboardLayout';
 
 interface Request {
   id: string;
-  product: {
+  products: {
     name: string;
     price: number;
   };
-  buyer: {
-    full_name: string;
-    email: string;
-  };
+  buyer_id: string;
   quantity: number;
   status: 'pending' | 'accepted' | 'rejected' | 'completed';
-  message: string;
+  notes: string;
+  total_amount: number;
   created_at: string;
 }
 
@@ -42,16 +40,16 @@ const RequestCard = ({ request, onStatusChange }: {
   request: Request; 
   onStatusChange: (requestId: string, newStatus: string) => Promise<void>;
 }) => {
-  const total = request.product.price * request.quantity;
+  const total = request.total_amount;
 
   return (
     <Card className="mb-4">
       <CardContent className="pt-6">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h3 className="font-semibold">{request.product.name}</h3>
+            <h3 className="font-semibold">{request.products.name}</h3>
             <p className="text-sm text-muted-foreground">
-              From: {request.buyer.full_name}
+              From: Buyer {request.buyer_id.slice(0, 8)}...
             </p>
             <p className="text-sm text-muted-foreground">
               Quantity: {request.quantity} units
@@ -65,9 +63,9 @@ const RequestCard = ({ request, onStatusChange }: {
           </Badge>
         </div>
 
-        {request.message && (
+        {request.notes && (
           <p className="text-sm bg-muted p-3 rounded-md mb-4">
-            "{request.message}"
+            "{request.notes}"
           </p>
         )}
 
@@ -121,13 +119,13 @@ export default function Requests() {
     fetchRequests();
     // Subscribe to new requests
     const channel = supabase
-      .channel('requests')
+      .channel('purchase_requests')
       .on(
         'postgres_changes',
         {
           event: '*',
           schema: 'public',
-          table: 'requests',
+          table: 'purchase_requests',
           filter: `farmer_id=eq.${user?.id}`,
         },
         () => {
@@ -144,21 +142,22 @@ export default function Requests() {
   const fetchRequests = async () => {
     try {
       const { data, error } = await supabase
-        .from('requests')
+        .from('purchase_requests')
         .select(`
           id,
-          product:products(name, price),
-          buyer:buyer_id(full_name, email),
           quantity,
           status,
-          message,
-          created_at
+          notes,
+          total_amount,
+          created_at,
+          buyer_id,
+          products(name, price)
         `)
         .eq('farmer_id', user?.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setRequests(data || []);
+      setRequests((data || []) as Request[]);
     } catch (error) {
       console.error('Error fetching requests:', error);
       toast({
@@ -174,7 +173,7 @@ export default function Requests() {
   const handleStatusChange = async (requestId: string, newStatus: string) => {
     try {
       const { error } = await supabase
-        .from('requests')
+        .from('purchase_requests')
         .update({ status: newStatus })
         .eq('id', requestId);
 

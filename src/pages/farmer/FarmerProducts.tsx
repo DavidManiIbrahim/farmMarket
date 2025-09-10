@@ -24,11 +24,13 @@ interface Product {
   name: string;
   description: string;
   category: string;
+  category_id?: string;
   price: number;
   unit: string;
   stock_quantity: number;
   image_url?: string | null;
   is_organic: boolean;
+  harvest_date?: string;
   location: string;
   is_available: boolean;
   created_at: string;
@@ -188,7 +190,7 @@ const FarmerProducts = () => {
         unit: formData.unit,
         stock_quantity: parseInt(formData.stock_quantity),
         is_organic: formData.is_organic,
-        harvest_date: harvestDate,
+        harvest_date: harvestDate?.toISOString(),
         location: formData.location,
         ...(uploadedImageUrl && { image_url: uploadedImageUrl })
       };

@@ -25,7 +25,7 @@ export default function AdminProducts() {
         .from('products')
         .select(`
           *,
-          profiles:farmer_id(full_name)
+          farmer_display_name
         `);
       
       if (error) throw error;
@@ -116,7 +116,7 @@ export default function AdminProducts() {
               {products?.map((product) => (
                 <TableRow key={product.id}>
                   <TableCell>{product.name}</TableCell>
-                  <TableCell>{product.profiles?.full_name}</TableCell>
+                  <TableCell>{product.farmer_display_name || 'Unknown'}</TableCell>
                   <TableCell>${product.price}</TableCell>
                   <TableCell>{product.stock_quantity} {product.unit}</TableCell>
                   <TableCell>

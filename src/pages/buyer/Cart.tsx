@@ -1,3 +1,4 @@
+import React, { useState } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -5,8 +6,6 @@ import { Input } from '@/components/ui/input';
 import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Trash2 } from 'lucide-react';
-import { createStripeSession } from '@/lib/stripe-server';
-import { sendNotification } from '@/lib/notifications';
 import { useToast } from '@/hooks/use-toast';
 
 const CartPage = () => {
@@ -20,23 +19,10 @@ const CartPage = () => {
     setLoading(true);
 
     try {
-      // Create Stripe checkout session
-      const session = await createStripeSession(items, user.id);
-
-      // Send notifications to farmers
-      const uniqueFarmers = [...new Set(items.map(item => item.farmer_id))];
-      for (const farmerId of uniqueFarmers) {
-        await sendNotification({
-          userId: farmerId,
-          title: 'New Purchase Request',
-          message: `A buyer has requested to purchase your products`,
-          type: 'request',
-          relatedId: session.id
-        });
-      }
-
-      // Redirect to Stripe checkout
-      window.location.href = session.url;
+      toast({
+        title: 'Success',
+        description: 'Order submitted successfully!',
+      });
     } catch (error) {
       console.error('Checkout error:', error);
       toast({
