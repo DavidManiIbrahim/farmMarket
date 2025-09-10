@@ -10,6 +10,7 @@ import { Users, Package, ShoppingCart, DollarSign, Search, Filter } from 'lucide
 import { useToast } from '@/hooks/use-toast';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import DashboardLayout from '@/components/DashboardLayout';
+import { EnhancedUsers } from '@/pages/admin/EnhancedUsers';
 
 interface User {
   id: string;
@@ -211,35 +212,7 @@ const AdminDashboard = () => {
           </div>
         )}
 
-        {activeTab === 'users' && (
-          <Card>
-            <CardHeader>
-              <CardTitle>All Users</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {users.map((user) => (
-                  <div key={user.id} className="flex justify-between items-center p-4 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{user.full_name || user.email}</p>
-                      <p className="text-sm text-muted-foreground">{user.email}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Joined: {new Date(user.created_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      {user.user_roles?.map((role, index) => (
-                        <Badge key={index} variant="outline">
-                          {role.role}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+        {activeTab === 'users' && <EnhancedUsers />}
 
         {activeTab === 'products' && (
           <Card>

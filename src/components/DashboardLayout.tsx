@@ -85,6 +85,12 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       icon: BarChart3,
       href: '/admin/analytics',
       roles: ['admin']
+    },
+    {
+      title: 'Profile',
+      icon: User,
+      href: '/profile',
+      roles: ['farmer', 'seller', 'admin']
     }
   ];
 
@@ -115,12 +121,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             variant="ghost"
             className="w-full justify-start text-left"
             onClick={() => {
-              if (item.href === '/dashboard') {
-                navigate('/dashboard');
-              } else {
-                // For future routes
-                navigate(item.href);
-              }
+              navigate(item.href);
               setSidebarOpen(false);
             }}
           >

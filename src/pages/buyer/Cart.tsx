@@ -7,6 +7,7 @@ import { useCart } from '@/contexts/CartContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { Trash2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const CartPage = () => {
   const { items, updateQuantity, removeItem, clear, totalItems, totalPrice } = useCart();
@@ -15,14 +16,32 @@ const CartPage = () => {
   const [loading, setLoading] = useState(false);
 
   const handleCheckout = async () => {
-    if (!user) return;
+    if (!user || items.length === 0) return;
     setLoading(true);
 
     try {
-      toast({
-        title: 'Success',
-        description: 'Order submitted successfully!',
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { 
+          items: items.map(item => ({
+            product: {
+              name: item.name,
+              price: item.price,
+              image_url: item.image_url,
+              farmer_name: item.farmer_display_name || 'Unknown Farmer'
+            },
+            quantity: item.quantity
+          })),
+          buyerId: user.id 
+        }
       });
+
+      if (error) throw error;
+
+      if (data?.sessionId) {
+        // Open Stripe checkout in new tab
+        window.open(`https://checkout.stripe.com/c/pay/${data.sessionId}#fidkdWxOYHwnPyd1blpxYHZxWjA0SjJsMnd%2FZ1Y2fEEzdUQyT2JiZGpHN2tRVWdpdGZLQ1clM2B8aUxUT3J8YUpLUmNrPWxBVW5rPD1VcGZ8Y212NUZgd3U3blh8VENpV2x8N14yTVAzZnZgQlE2PX1lMnR2PScpJ2N3amhWYHdzYHcnP3F3cGApJ2lkfGpwcVF8dWAnPyd2bGtiaWBabHFgaCcpJ2BrZGdpYFVpZGZgbWppYWB3dic%2FcXdwYHgl`, '_blank');
+        clear(); // Clear cart after successful checkout
+      }
     } catch (error) {
       console.error('Checkout error:', error);
       toast({

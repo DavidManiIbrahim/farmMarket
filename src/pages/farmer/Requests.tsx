@@ -172,12 +172,27 @@ export default function Requests() {
 
   const handleStatusChange = async (requestId: string, newStatus: string) => {
     try {
+      const request = requests.find(r => r.id === requestId);
+      
       const { error } = await supabase
         .from('purchase_requests')
         .update({ status: newStatus })
         .eq('id', requestId);
 
       if (error) throw error;
+
+      // Create notification for buyer when status changes
+      if (newStatus !== 'pending' && request) {
+        await supabase.functions.invoke('create-notification', {
+          body: {
+            userId: request.buyer_id,
+            title: 'Request Status Updated',
+            message: `Your request for ${request.products.name} has been ${newStatus}`,
+            type: 'info',
+            relatedId: requestId
+          }
+        });
+      }
 
       toast({
         title: 'Success',

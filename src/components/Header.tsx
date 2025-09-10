@@ -3,6 +3,7 @@ import { Search, User, ShoppingCart, Menu } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { NotificationBell } from "@/components/NotificationBell";
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -62,13 +63,16 @@ export const Header = () => {
         {/* Desktop Actions */}
         <div className="hidden md:flex items-center space-x-4">
           {user && (
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={() => navigate('/dashboard')}
-            >
-              <ShoppingCart className="w-5 h-5" />
-            </Button>
+            <>
+              <NotificationBell />
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => navigate('/buyer/cart')}
+              >
+                <ShoppingCart className="w-5 h-5" />
+              </Button>
+            </>
           )}
           
           {user ? (
