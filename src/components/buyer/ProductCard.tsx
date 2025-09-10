@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Heart, ShoppingCart, MapPin, Calendar, User, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useWishlist } from '@/contexts/WishlistContext';
 
 interface Product {
   id: string;
@@ -25,21 +26,26 @@ interface Product {
 interface ProductCardProps {
   product: Product;
   onAddToCart: (product: Product) => void;
-  onToggleWishlist: (productId: string) => void;
   onContactFarmer?: (product: Product) => void;
-  isInWishlist: boolean;
   isInCart: boolean;
 }
 
 export const ProductCard = ({ 
   product, 
   onAddToCart, 
-  onToggleWishlist, 
   onContactFarmer,
-  isInWishlist, 
   isInCart 
 }: ProductCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
+  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+
+  const handleToggleWishlist = () => {
+    if (isInWishlist(product.id)) {
+      removeFromWishlist(product.id);
+    } else {
+      addToWishlist(product.id);
+    }
+  };
 
   return (
     <>
@@ -64,11 +70,11 @@ export const ProductCard = ({
               variant="ghost"
               size="icon"
               className="absolute top-2 right-2 bg-white/80 hover:bg-white"
-              onClick={() => onToggleWishlist(product.id)}
+              onClick={handleToggleWishlist}
             >
               <Heart className={cn(
                 "w-4 h-4",
-                isInWishlist ? "fill-red-500 text-red-500" : "text-muted-foreground"
+                isInWishlist(product.id) ? "fill-red-500 text-red-500" : "text-muted-foreground"
               )} />
             </Button>
 
@@ -215,14 +221,14 @@ export const ProductCard = ({
             <div className="flex gap-2 pt-4">
               <Button
                 variant="outline"
-                onClick={() => onToggleWishlist(product.id)}
+                onClick={handleToggleWishlist}
                 className="flex-1"
               >
                 <Heart className={cn(
                   "w-4 h-4 mr-2",
-                  isInWishlist ? "fill-current" : ""
+                  isInWishlist(product.id) ? "fill-current" : ""
                 )} />
-                {isInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                {isInWishlist(product.id) ? 'Remove from Wishlist' : 'Add to Wishlist'}
               </Button>
               <Button
                 onClick={() => {

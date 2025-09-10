@@ -12,8 +12,11 @@ import {
   User,
   BarChart3,
   Menu,
-  X
+  X,
+  Heart,
+  History
 } from 'lucide-react';
+import NotificationsCenter from './NotificationsCenter';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -48,6 +51,18 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       title: 'Cart',
       icon: ShoppingCart,
       href: '/buyer/cart',
+      roles: ['seller']
+    },
+    {
+      title: 'Order History',
+      icon: History,
+      href: '/buyer/order-history',
+      roles: ['seller']
+    },
+    {
+      title: 'Wishlist',
+      icon: Heart,
+      href: '/buyer/wishlist',
       roles: ['seller']
     },
     {
@@ -183,6 +198,33 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
 
       {/* Main content */}
       <div className="lg:pl-64 min-h-screen">
+        {/* Desktop header */}
+        <div className="hidden lg:flex items-center justify-between p-4 bg-card border-b border-border">
+          <div className="flex items-center space-x-2">
+            <div className="w-6 h-6 bg-gradient-primary rounded flex items-center justify-center">
+              <span className="text-white font-bold text-xs">FM</span>
+            </div>
+            <span className="font-bold text-foreground">FarmMarket</span>
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <NotificationsCenter />
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center">
+                <User className="w-4 h-4" />
+              </div>
+              <div className="text-sm">
+                <p className="font-medium text-foreground">
+                  {profile?.full_name || user?.email}
+                </p>
+                <p className="text-xs text-muted-foreground capitalize">
+                  {userRole?.role}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Mobile header */}
         <div className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border">
           <Button
@@ -200,7 +242,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <span className="font-bold text-foreground">FarmMarket</span>
           </div>
           
-          <div className="w-10" /> {/* Spacer */}
+          <NotificationsCenter />
         </div>
 
         {/* Page content */}

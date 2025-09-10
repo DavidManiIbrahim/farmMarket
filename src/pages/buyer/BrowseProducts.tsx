@@ -81,10 +81,6 @@ const BrowseProducts = () => {
     }, 1);
   };
 
-  const handleToggleWishlist = (productId: string) => {
-    // TODO: Implement wishlist functionality
-    console.log('Toggle wishlist:', productId);
-  };
 
   const handleContactFarmer = (product: Product) => {
     // TODO: Implement contact farmer functionality
@@ -188,9 +184,7 @@ const BrowseProducts = () => {
                 key={product.id}
                 product={product}
                 onAddToCart={handleAddToCart}
-                onToggleWishlist={handleToggleWishlist}
                 onContactFarmer={handleContactFarmer}
-                isInWishlist={false}
                 isInCart={false}
               />
             ))}

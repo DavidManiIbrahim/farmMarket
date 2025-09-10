@@ -141,10 +141,6 @@ const BuyerDashboard = () => {
     }, 1);
   };
 
-  const handleToggleWishlist = (productId: string) => {
-    // TODO: Implement wishlist functionality
-    console.log('Toggle wishlist:', productId);
-  };
 
   if (loading) {
     return (
@@ -272,8 +268,6 @@ const BuyerDashboard = () => {
                     key={product.id}
                     product={product}
                     onAddToCart={handleAddToCart}
-                    onToggleWishlist={handleToggleWishlist}
-                    isInWishlist={false}
                     isInCart={false}
                   />
                 ))}

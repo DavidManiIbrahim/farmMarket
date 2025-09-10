@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { WishlistProvider } from "@/contexts/WishlistContext";
+import { NotificationsProvider } from "@/contexts/NotificationsContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { Loader2 } from "lucide-react";
 
@@ -14,10 +16,20 @@ const Index = lazy(() => import("./pages/Index"));
 const Auth = lazy(() => import("./pages/Auth"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+
+// Buyer Pages
 const BuyerDashboard = lazy(() => import("./pages/buyer/BuyerDashboard"));
 const CartPage = lazy(() => import("./pages/buyer/Cart"));
+
+// Farmer Pages
+const FarmerDashboard = lazy(() => import("./pages/dashboards/FarmerDashboard"));
+const FarmerOrders = lazy(() => import("./pages/farmer/Orders"));
+const FarmerEarnings = lazy(() => import("./pages/farmer/Earnings"));
+const FarmerAnalytics = lazy(() => import("./pages/farmer/Analytics"));
 const OrdersPage = lazy(() => import("./pages/buyer/Orders"));
 const OrderDetailsPage = lazy(() => import("./pages/buyer/OrderDetails"));
+const OrderHistory = lazy(() => import("./pages/buyer/OrderHistory"));
+const Wishlist = lazy(() => import("./pages/buyer/Wishlist"));
 const BrowseProducts = lazy(() => import("./pages/buyer/BrowseProducts"));
 const AddProduct = lazy(() => import("./pages/farmer/AddProduct"));
 const FarmerProducts = lazy(() => import("./pages/farmer/FarmerProducts"));
@@ -39,7 +51,9 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
       <CartProvider>
-      <TooltipProvider>
+        <WishlistProvider>
+          <NotificationsProvider>
+            <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -77,6 +91,13 @@ const App = () => (
             <Route path="/buyer/cart" element={<ProtectedRoute allowedRoles={['seller']}><CartPage /></ProtectedRoute>} />
             <Route path="/buyer/orders" element={<ProtectedRoute allowedRoles={['seller']}><OrdersPage /></ProtectedRoute>} />
             <Route path="/buyer/orders/:id" element={<ProtectedRoute allowedRoles={['seller']}><OrderDetailsPage /></ProtectedRoute>} />
+            <Route path="/buyer/order-history" element={<ProtectedRoute allowedRoles={['seller']}><OrderHistory /></ProtectedRoute>} />
+            <Route path="/buyer/wishlist" element={<ProtectedRoute allowedRoles={['seller']}><Wishlist /></ProtectedRoute>} />
+            {/* Farmer routes */}
+            <Route path="/farmer/dashboard" element={<ProtectedRoute requiredRole="farmer"><FarmerDashboard /></ProtectedRoute>} />
+            <Route path="/farmer/orders" element={<ProtectedRoute requiredRole="farmer"><FarmerOrders /></ProtectedRoute>} />
+            <Route path="/farmer/earnings" element={<ProtectedRoute requiredRole="farmer"><FarmerEarnings /></ProtectedRoute>} />
+            <Route path="/farmer/analytics" element={<ProtectedRoute requiredRole="farmer"><FarmerAnalytics /></ProtectedRoute>} />
             <Route path="/farmer/add-product" element={<ProtectedRoute requiredRole="farmer"><AddProduct /></ProtectedRoute>} />
             <Route path="/farmer/products" element={<ProtectedRoute requiredRole="farmer"><FarmerProducts /></ProtectedRoute>} />
             <Route path="/farmer/requests" element={<ProtectedRoute requiredRole="farmer"><Requests /></ProtectedRoute>} />
@@ -126,7 +147,9 @@ const App = () => (
             </Routes>
           </Suspense>
         </BrowserRouter>
-      </TooltipProvider>
+            </TooltipProvider>
+          </NotificationsProvider>
+        </WishlistProvider>
       </CartProvider>
     </AuthProvider>
   </QueryClientProvider>
