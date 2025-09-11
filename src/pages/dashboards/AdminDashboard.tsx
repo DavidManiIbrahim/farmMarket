@@ -206,9 +206,62 @@ const AdminDashboard = () => {
         </div>
 
         {activeTab === 'overview' && (
-          <div className="space-y-6">
-            {/* Analytics Dashboard */}
-            <AnalyticsDashboard userRole="admin" />
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            {/* User Statistics */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Users</CardTitle>
+                <Users className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalUsers}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {stats.farmers} Farmers • {stats.sellers} Buyers
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Product Statistics */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+                <Package className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalProducts}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {stats.availableProducts} Available Products
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Order Statistics */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Orders</CardTitle>
+                <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">{stats.totalOrders}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {stats.pendingOrders} Pending Orders
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Revenue Statistics */}
+            <Card>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium">Total Revenue</CardTitle>
+                <DollarSign className="h-4 w-4 text-muted-foreground" />
+              </CardHeader>
+              <CardContent>
+                <div className="text-2xl font-bold">₦{stats.totalRevenue.toLocaleString('en-NG')}</div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  From {stats.totalOrders} Orders
+                </div>
+              </CardContent>
+            </Card>
           </div>
         )}
 
@@ -240,7 +293,7 @@ const AdminDashboard = () => {
                         by {product.profiles.full_name} • {product.category}
                       </p>
                       <p className="text-sm">
-                        ${product.price} • {product.stock_quantity} in stock
+                        ₦{product.price.toLocaleString('en-NG')} • {product.stock_quantity} in stock
                       </p>
                     </div>
                     <div className="flex items-center gap-2">

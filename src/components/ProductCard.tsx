@@ -115,12 +115,12 @@ export const ProductCard = ({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-2">
             <span className="text-2xl font-bold text-foreground">
-              ₦{discountedPrice.toLocaleString()}
+              ₦{discountedPrice.toLocaleString('en-NG')}
             </span>
             <span className="text-sm text-muted-foreground">/{unit}</span>
             {discount && (
               <span className="text-sm text-muted-foreground line-through">
-                ₦{price.toLocaleString()}
+                ₦{price.toLocaleString('en-NG')}
               </span>
             )}
           </div>
