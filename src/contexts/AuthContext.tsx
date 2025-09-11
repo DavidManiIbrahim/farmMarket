@@ -26,7 +26,7 @@ interface AuthContextType {
   profile: Profile | null;
   userRole: UserRole | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName: string, role: 'farmer' | 'seller') => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName: string, role: 'admin' | 'farmer' | 'seller') => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
@@ -68,7 +68,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         .single();
 
       setProfile(profileData);
-      setUserRole(roleData);
+      if (roleData) {
+        setUserRole({ role: roleData.role });
+      }
     } catch (error) {
       console.error('Error fetching profile:', error);
     }
@@ -107,7 +109,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string, role: 'farmer' | 'seller') => {
+  const signUp = async (email: string, password: string, fullName: string, role: 'admin' | 'farmer' | 'seller') => {
     const redirectUrl = `${window.location.origin}/dashboard`;
     
     const { error } = await supabase.auth.signUp({

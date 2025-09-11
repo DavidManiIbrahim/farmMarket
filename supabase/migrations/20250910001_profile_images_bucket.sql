@@ -8,7 +8,7 @@ alter table storage.objects enable row level security;
 
 -- Allow public read access to profile images
 create policy "Public read access to profile images"
-on storage.objects for select
+on storage.objectsadd role  for select
 using (bucket_id = 'profile-images');
 
 -- Allow authenticated users to upload to their own folder: {auth.uid()}/...

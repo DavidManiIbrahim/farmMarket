@@ -24,7 +24,8 @@ const Auth = () => {
     email: '',
     password: '',
     confirmPassword: '',
-    fullName: ''
+    fullName: '',
+    role: 'buyer'
   });
 
   // Redirect if already logged in
@@ -73,7 +74,7 @@ const Auth = () => {
       signupForm.email,
       signupForm.password,
       signupForm.fullName,
-      'seller' // Default role assignment
+      signupForm.role === 'buyer' ? 'seller' : signupForm.role // Map buyer to seller, keep admin and farmer as is
     );
 
     if (error) {
@@ -86,7 +87,7 @@ const Auth = () => {
     } else {
       toast({
         title: "Account Created!",
-        description: "Please check your email to verify your account."
+        description: "Login Successful."
       });
     }
     
@@ -211,6 +212,23 @@ const Auth = () => {
                       onChange={(e) => setSignupForm({ ...signupForm, confirmPassword: e.target.value })}
                       required
                     />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="signup-role">Role</Label>
+                    <Select
+                      value={signupForm.role}
+                      onValueChange={(value) => setSignupForm({ ...signupForm, role: value })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select your role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="buyer">Buy Farm Products</SelectItem>
+                        <SelectItem value="farmer">Sell Farm Products</SelectItem>
+                        <SelectItem value="admin">Administrator</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   {error && (

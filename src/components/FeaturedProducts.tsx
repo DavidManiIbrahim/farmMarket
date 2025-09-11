@@ -1,6 +1,8 @@
 import { ProductCard } from "./ProductCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import organicTomatoes from "@/assets/organic-tomatoes.jpg";
 import yellowCorn from "@/assets/yellow-corn.jpg";
 import cassavaTubers from "@/assets/cassava-tubers.jpg";
@@ -104,6 +106,8 @@ const sampleProducts = [
 ];
 
 export const FeaturedProducts = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   return (
     <section className="py-16 bg-background">
       <div className="container mx-auto px-4">
@@ -134,7 +138,7 @@ export const FeaturedProducts = () => {
             variant="outline" 
             size="lg" 
             className="text-lg px-8"
-            onClick={() => alert('Product catalog requires Supabase integration')}
+            onClick={() => user ? navigate('/buyer/products') : navigate('/auth')}
           >
             View All Products
             <ArrowRight className="ml-2 w-5 h-5" />

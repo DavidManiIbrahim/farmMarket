@@ -2,6 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MapPin, Star, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface ProductCardProps {
   id: string;
@@ -32,6 +34,8 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const discountedPrice = discount ? price - (price * discount / 100) : price;
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   return (
     <div className="group bg-gradient-card rounded-xl shadow-card hover:shadow-hero transition-all duration-300 overflow-hidden border border-border hover:scale-105 hover:border-primary/30">
@@ -127,7 +131,15 @@ export const ProductCard = ({
           variant={inStock ? "farm" : "outline"} 
           className="w-full" 
           disabled={!inStock}
-          onClick={() => inStock ? alert('Cart functionality requires Supabase integration') : undefined}
+          onClick={() => {
+            if (!inStock) return;
+            if (!user) {
+              navigate('/auth');
+            } else {
+              // Add to cart functionality will be implemented later
+              alert('Cart functionality will be available soon');
+            }
+          }}
         >
           <ShoppingCart className="w-4 h-4 mr-2" />
           {inStock ? 'Add to Cart' : 'Out of Stock'}

@@ -1,8 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, MapPin, TrendingUp } from "lucide-react";
 import heroImage from "@/assets/hero-farm.jpg";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Hero = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   return (
     <section className="relative overflow-hidden">
       {/* Background Image */}
@@ -38,7 +42,7 @@ export const Hero = () => {
               variant="hero" 
               size="lg" 
               className="text-lg px-8 py-4"
-              onClick={() => alert('Marketplace requires Supabase integration for product data')}
+              onClick={() => user ? navigate('/buyer/products') : navigate('/auth')}
             >
               Start Buying Fresh
               <ArrowRight className="ml-2 w-5 h-5" />
@@ -47,7 +51,7 @@ export const Hero = () => {
               variant="farm" 
               size="lg" 
               className="text-lg px-8 py-4"
-              onClick={() => alert('Farmer registration requires Supabase integration')}
+              onClick={() => navigate('/auth')}
             >
               Sell Your Produce
             </Button>
