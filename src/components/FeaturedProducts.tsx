@@ -19,7 +19,7 @@ const sampleProducts = [
     image: organicTomatoes,
     farmer: {
       name: "Adebayo Farm",
-      location: "Ogun State",
+      location: "Shelleng, Adamawa",
       rating: 4.8,
       verified: true
     },
@@ -34,8 +34,8 @@ const sampleProducts = [
     unit: "bag",
     image: yellowCorn,
     farmer: {
-      name: "Emeka Agric",
-      location: "Enugu State",
+      name: "Emeka Agric Farm",
+      location: "Mubi Adamawa",
       rating: 4.9,
       verified: true
     },
@@ -49,8 +49,8 @@ const sampleProducts = [
     unit: "bag",
     image: cassavaTubers,
     farmer: {
-      name: "Kano Farms Ltd",
-      location: "Kano State",
+      name: "Girei Farms Ltd",
+      location: "Girei, Adamawa",
       rating: 4.7,
       verified: true
     },
@@ -64,8 +64,8 @@ const sampleProducts = [
     unit: "bag",
     image: premiumRice,
     farmer: {
-      name: "Kebbi Rice Mill",
-      location: "Kebbi State",
+      name: "Madagali Rice Mill",
+      location: "Madagali,Adamawa",
       rating: 4.6,
       verified: true
     },
@@ -79,8 +79,8 @@ const sampleProducts = [
     unit: "bunch",
     image: plantainBunches,
     farmer: {
-      name: "Cross River Farms",
-      location: "Cross River State",
+      name: "sah silga Farms",
+      location: "Ganye, Adamawa",
       rating: 4.8,
       verified: true
     },
@@ -95,8 +95,8 @@ const sampleProducts = [
     unit: "tuber",
     image: organicYam,
     farmer: {
-      name: "Benue Yam Growers",
-      location: "Benue State",
+      name: "Yola Yam Growers",
+      location: "Yola North, Adamawa",
       rating: 4.9,
       verified: true
     },
