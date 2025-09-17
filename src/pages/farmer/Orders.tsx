@@ -50,7 +50,7 @@ export default function FarmerOrders() {
     try {
       const { data, error } = await supabase
         .from('orders')
-        .select(\`
+        .select(`
           *,
           buyer:buyer_id(
             id,
@@ -63,7 +63,7 @@ export default function FarmerOrders() {
             price,
             image_url
           )
-        \`)
+        `)
         .eq('farmer_id', user?.id)
         .order('created_at', { ascending: false });
 
@@ -111,7 +111,8 @@ export default function FarmerOrders() {
     }
   };
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: string | null) => {
+    if (!date) return '-'; // fallback if date is null
     return new Date(date).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -121,7 +122,8 @@ export default function FarmerOrders() {
     });
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | null) => {
+    if (price === null) return '-'; // fallback if price is null
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',

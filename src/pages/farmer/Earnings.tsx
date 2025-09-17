@@ -30,6 +30,7 @@ import { useAuth } from '@/contexts/AuthContext';
 export default function FarmerEarnings() {
   const { user } = useAuth();
   const { toast } = useToast();
+  
   const [summary, setSummary] = useState<EarningsSummary>({
     total_earnings: 0,
     available_balance: 0,
@@ -37,6 +38,7 @@ export default function FarmerEarnings() {
   });
   const [payoutRequests, setPayoutRequests] = useState<PayoutRequest[]>([]);
   const [loading, setLoading] = useState(true);
+  
   const [dialogOpen, setDialogOpen] = useState(false);
   const [requestingPayout, setRequestingPayout] = useState(false);
   const [payoutForm, setPayoutForm] = useState({
@@ -47,20 +49,34 @@ export default function FarmerEarnings() {
   });
 
   useEffect(() => {
-    if (user) {
-      fetchEarningsSummary();
-      fetchPayoutRequests();
+    if (!user) {
+      setLoading(false);
+      return;
     }
+    // Kick off both fetches
+    (async () => {
+      try {
+        await fetchEarningsSummary();
+        await fetchPayoutRequests();
+      } catch (err) {
+        // errors should be handled inside the fetch functions
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, [user]);
 
   const fetchEarningsSummary = async () => {
+    if (!user) return;
     try {
       const { data, error } = await supabase.rpc('get_farmer_earnings', {
-        farmer_id: user?.id,
+        farmer_id: user.id,
       });
 
       if (error) throw error;
-      setSummary(data);
+      if (data) {
+        setSummary(data as EarningsSummary);
+      }
     } catch (error: any) {
       toast({
         title: 'Error',
@@ -71,44 +87,54 @@ export default function FarmerEarnings() {
   };
 
   const fetchPayoutRequests = async () => {
+    if (!user) return;
     try {
       const { data, error } = await supabase
         .from('payout_requests')
-        .select(\`
+        .select(`
           *,
           processed_by_user:processed_by(
             id,
             full_name,
             email
           )
-        \`)
-        .eq('farmer_id', user?.id)
+        `)
+        .eq('farmer_id', user.id)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPayoutRequests(data as PayoutRequest[]);
+      if (data) {
+        setPayoutRequests(data as PayoutRequest[]);
+      }
     } catch (error: any) {
       toast({
         title: 'Error',
         description: error.message || 'Failed to fetch payout requests',
         variant: 'destructive',
       });
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleRequestPayout = async () => {
+    if (!user) {
+      toast({ title: 'Error', description: 'User not logged in', variant: 'destructive' });
+      return;
+    }
+
     try {
       setRequestingPayout(true);
       const amount = parseFloat(payoutForm.amount);
+
+      if (isNaN(amount) || amount <= 0) {
+        throw new Error('Enter a valid amount');
+      }
 
       if (amount > summary.available_balance) {
         throw new Error('Requested amount exceeds available balance');
       }
 
       const { error } = await supabase.from('payout_requests').insert({
-        farmer_id: user?.id,
+        farmer_id: user.id,
         amount,
         status: 'pending',
         payment_method: {
@@ -146,15 +172,19 @@ export default function FarmerEarnings() {
     }
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | null | undefined) => {
+    if (price == null) return '-';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
     }).format(price);
   };
 
-  const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString('en-US', {
+  const formatDate = (dateStr: string | null | undefined) => {
+    if (!dateStr) return '-';
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return '-';
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -217,7 +247,7 @@ export default function FarmerEarnings() {
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger asChild>
               <Button
-                disabled={summary.available_balance === 0}
+                disabled={summary.available_balance <= 0}
                 className="w-[200px]"
               >
                 Request Payout
@@ -244,7 +274,7 @@ export default function FarmerEarnings() {
                       }))
                     }
                     placeholder="Enter amount"
-                    max={summary.available_balance}
+                    max={summary.available_balance.toString()}
                   />
                 </div>
                 <div>
@@ -364,9 +394,9 @@ export default function FarmerEarnings() {
                         </TableCell>
                         <TableCell>
                           <div className="text-sm">
-                            <p>Bank: {request.payment_method.bank_name}</p>
+                            <p>Bank: {request.payment_method?.bank_name || '-'}</p>
                             <p>
-                              Account: {request.payment_method.account_number}
+                              Account: {request.payment_method?.account_number || '-'}
                             </p>
                           </div>
                         </TableCell>
