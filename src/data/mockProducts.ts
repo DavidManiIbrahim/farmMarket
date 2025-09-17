@@ -21,7 +21,7 @@ export const mockProducts = [
     stock_quantity: 100,
     is_organic: true,
     harvest_date: subDays(new Date(), 2).toISOString(),
-    location: 'Yola South, Adamawa',
+    location: 'Lagos, Nigeria',
     image_url: 'https://images.unsplash.com/photo-1592924357228-91a4dacdcff9',
     is_available: true,
     category: 'Vegetables'
@@ -35,7 +35,7 @@ export const mockProducts = [
     stock_quantity: 200,
     is_organic: true,
     harvest_date: subDays(new Date(), 1).toISOString(),
-    location: 'Mubi North, Adamawa',
+    location: 'Abuja, Nigeria',
     image_url: 'https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6',
     is_available: true,
     category: 'Fruits'
@@ -49,7 +49,7 @@ export const mockProducts = [
     stock_quantity: 50,
     is_organic: true,
     harvest_date: new Date().toISOString(),
-    location: 'Michika, Adamawa',
+    location: 'Kano, Nigeria',
     image_url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150',
     is_available: true,
     category: 'Dairy'
@@ -63,7 +63,7 @@ export const mockProducts = [
     stock_quantity: 75,
     is_organic: true,
     harvest_date: subDays(new Date(), 3).toISOString(),
-    location: 'Ganye, Adamawa',
+    location: 'Enugu, Nigeria',
     image_url: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37',
     is_available: true,
     category: 'Vegetables'
@@ -77,7 +77,7 @@ export const mockProducts = [
     stock_quantity: 40,
     is_organic: true,
     harvest_date: new Date().toISOString(),
-    location: 'Numan, Adamawa',
+    location: 'Oyo, Nigeria',
     image_url: 'https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f',
     is_available: true,
     category: 'Eggs'

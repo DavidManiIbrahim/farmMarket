@@ -44,7 +44,7 @@ export const CTA = () => {
             <Button 
               variant="outline" 
               size="lg" 
-              className="text-lg px-8 py-4 border-white text-agricultural-green hover:bg-white/90 hover:text-agricultural-blue"
+              className="text-lg px-8 py-4 border-white text-white hover:bg-white hover:text-agricultural-green"
             >
               Become a Seller
             </Button>
