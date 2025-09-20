@@ -117,7 +117,7 @@ export default function AdminProducts() {
                 <TableRow key={product.id}>
                   <TableCell>{product.name}</TableCell>
                   <TableCell>{product.farmer_display_name || 'Unknown'}</TableCell>
-                  <TableCell>${product.price}</TableCell>
+                  <TableCell>₦{product.price}</TableCell>
                   <TableCell>{product.stock_quantity} {product.unit}</TableCell>
                   <TableCell>
                     <Badge variant={product.is_available ? 'default' : 'secondary'}>

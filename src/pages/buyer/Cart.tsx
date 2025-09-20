@@ -86,7 +86,7 @@ const CartPage = () => {
                       <div className="flex-1">
                         <p className="font-medium text-foreground">{item.name}</p>
                         <p className="text-sm text-muted-foreground">{item.unit}</p>
-                        <p className="text-sm font-semibold">${item.price}</p>
+                        <p className="text-sm font-semibold">₦{item.price}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         <Input
@@ -119,7 +119,7 @@ const CartPage = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Total</span>
-                  <span className="font-semibold">${totalPrice.toFixed(2)}</span>
+                  <span className="font-semibold">₦{totalPrice.toFixed(2)}</span>
                 </div>
                 <Button 
                   className="w-full mt-4" 

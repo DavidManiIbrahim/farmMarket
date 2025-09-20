@@ -162,7 +162,7 @@ const OrderHistory = () => {
                           <span className="ml-1 capitalize">{order.status}</span>
                         </Badge>
                         <p className="text-lg font-semibold mt-1">
-                          ${Number(order.total_price).toFixed(2)}
+                          ₦{Number(order.total_price).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -185,7 +185,7 @@ const OrderHistory = () => {
                       <div className="flex-1">
                         <h4 className="font-medium">{order.products.name}</h4>
                         <p className="text-sm text-muted-foreground">
-                          ${order.products.price}/{order.products.unit}
+                          ₦{order.products.price}/{order.products.unit}
                           {order.quantity && ` • Qty: ${order.quantity}`}
                         </p>
                       </div>

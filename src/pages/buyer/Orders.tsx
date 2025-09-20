@@ -62,7 +62,7 @@ const OrdersPage = () => {
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">${Number(order.total_price).toFixed(2)}</p>
+                      <p className="font-semibold">₦{Number(order.total_price).toFixed(2)}</p>
                       <p className="text-xs text-muted-foreground capitalize">{order.status}</p>
                       <Button variant="ghost" onClick={() => navigate(`/buyer/orders/${order.id}`)} className="mt-1">
                         View Details

@@ -139,7 +139,7 @@ const Wishlist = () => {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-2xl font-bold text-foreground">
-                          ${item.products.price}
+                          ₦{item.products.price}
                           <span className="text-sm font-normal text-muted-foreground">
                             /{item.products.unit}
                           </span>

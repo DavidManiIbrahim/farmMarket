@@ -89,7 +89,7 @@ const OrderDetailsPage = () => {
                 )}
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Total</span>
-                  <span className="font-semibold">${Number(order.total_price).toFixed(2)}</span>
+                  <span className="font-semibold">₦{Number(order.total_price).toFixed(2)}</span>
                 </div>
               </div>
             )}

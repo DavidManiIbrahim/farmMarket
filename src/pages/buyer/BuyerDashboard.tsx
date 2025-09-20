@@ -222,7 +222,7 @@ const BuyerDashboard = () => {
                       </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-semibold">${order.total_price.toFixed(2)}</p>
+                      <p className="font-semibold">₦{order.total_price.toFixed(2)}</p>
                       <Badge 
                         variant={
                           order.status === 'pending' ? 'secondary' :

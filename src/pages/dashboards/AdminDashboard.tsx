@@ -352,7 +352,7 @@ const AdminDashboard = () => {
                     <div>
                       <p className="font-medium">{order.products.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        {order.quantity} items • ${order.total_price.toFixed(2)}
+                        {order.quantity} items • ₦{order.total_price.toLocaleString('en-NG')}
                       </p>
                       <p className="text-xs text-muted-foreground">
                         {new Date(order.created_at).toLocaleDateString()}
