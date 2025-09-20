@@ -74,7 +74,8 @@ const Auth = () => {
       signupForm.email,
       signupForm.password,
       signupForm.fullName,
-      signupForm.role === 'buyer' ? 'seller' : signupForm.role // Map buyer to seller, keep admin and farmer as is
+      // Map buyer to seller, keep admin and farmer as is
+      signupForm.role === 'buyer' ? 'seller' : signupForm.role
     );
 
     if (error) {
