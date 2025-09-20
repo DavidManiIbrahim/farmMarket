@@ -50,7 +50,6 @@ export const WishlistProvider = ({ children }: WishlistProviderProps) => {
 
   const fetchWishlist = async () => {
     if (!user) return;
-    
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -67,15 +66,11 @@ export const WishlistProvider = ({ children }: WishlistProviderProps) => {
             image_url,
             stock_quantity,
             is_available,
-            farmer_id,
-            profiles:farmer_id (
-              full_name
-            )
+            farmer_id
           )
         `)
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-
       if (error) throw error;
       setItems((data as any) || []);
     } catch (error) {
@@ -95,8 +90,16 @@ export const WishlistProvider = ({ children }: WishlistProviderProps) => {
 
   const addToWishlist = async (productId: string) => {
     if (!user) return;
-
     try {
+      // Prevent duplicate wishlist entries
+      const { data: existing, error: fetchError } = await supabase
+        .from('wishlist')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('product_id', productId)
+        .single();
+      if (fetchError && fetchError.code !== 'PGRST116') throw fetchError;
+      if (existing) return; // Already in wishlist
       const { error } = await supabase
         .from('wishlist')
         .insert({

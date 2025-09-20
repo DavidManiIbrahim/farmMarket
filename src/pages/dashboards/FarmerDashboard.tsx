@@ -165,7 +165,7 @@ const FarmerDashboard = () => {
                       <p className="text-sm text-muted-foreground mb-2">{product.description}</p>
                       <div className="space-y-1 text-sm">
                         <p><span className="font-medium">Category:</span> {product.category}</p>
-                        <p><span className="font-medium">Price:</span> ${product.price}/{product.unit}</p>
+                        <p><span className="font-medium">Price:</span> ₦{product.price}/{product.unit}</p>
                         <p><span className="font-medium">Stock:</span> {product.stock_quantity} {product.unit}</p>
                         <p><span className="font-medium">Location:</span> {product.location}</p>
                         {product.is_organic && (

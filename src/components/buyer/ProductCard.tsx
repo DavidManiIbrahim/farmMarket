@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Heart, ShoppingCart, MapPin, Calendar, User, Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useWishlist } from '@/contexts/WishlistContext';
+import { useToast } from '@/hooks/use-toast';
 
 interface Product {
   id: string;
@@ -38,12 +39,17 @@ export const ProductCard = ({
 }: ProductCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
+  const { toast } = useToast();
 
-  const handleToggleWishlist = () => {
+  const handleToggleWishlist = async () => {
     if (isInWishlist(product.id)) {
-      removeFromWishlist(product.id);
+      await removeFromWishlist(product.id);
     } else {
-      addToWishlist(product.id);
+      await addToWishlist(product.id);
+      toast({
+        title: 'Added to Wishlist',
+        description: 'Product added to your wishlist successfully!',
+      });
     }
   };
 
@@ -116,7 +122,7 @@ export const ProductCard = ({
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-2xl font-bold text-foreground">
-                  ${product.price}
+                  ₦{product.price.toLocaleString('en-NG')}
                   <span className="text-sm font-normal text-muted-foreground">
                     /{product.unit}
                   </span>
@@ -174,7 +180,7 @@ export const ProductCard = ({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span className="font-medium">Price:</span>
-                  <span>${product.price}/{product.unit}</span>
+                  <span>₦{product.price.toLocaleString('en-NG')}/{product.unit}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="font-medium">Category:</span>

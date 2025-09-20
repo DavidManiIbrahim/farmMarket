@@ -146,7 +146,7 @@ export const ShoppingCart = ({
                     by {item.product.farmer_name}
                   </p>
                   <div className="flex gap-2 mt-1">
-                    <Badge variant="secondary">${item.product.price}/{item.product.unit}</Badge>
+                    <Badge variant="secondary">₦{item.product.price}/{item.product.unit}</Badge>
                     {item.product.is_organic && (
                       <Badge variant="default" className="bg-primary">Organic</Badge>
                     )}
@@ -194,10 +194,10 @@ export const ShoppingCart = ({
                 </div>
                 <div className="text-right">
                   <p className="font-semibold text-foreground">
-                    ${(item.product.price * item.quantity).toFixed(2)}
+                    ₦{(item.product.price * item.quantity).toFixed(2)}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {item.quantity} × ${item.product.price}
+                    {item.quantity} × ₦{item.product.price}
                   </p>
                 </div>
               </div>
@@ -210,7 +210,7 @@ export const ShoppingCart = ({
         <div className="space-y-2">
           <div className="flex justify-between text-sm">
             <span>Subtotal ({items.length} items):</span>
-            <span>${totalAmount.toFixed(2)}</span>
+            <span>₦{totalAmount.toFixed(2)}</span>
           </div>
           <div className="flex justify-between text-sm">
             <span>Estimated Delivery:</span>
@@ -219,7 +219,7 @@ export const ShoppingCart = ({
           <Separator />
           <div className="flex justify-between font-semibold text-lg">
             <span>Total:</span>
-            <span>${totalAmount.toFixed(2)}</span>
+            <span>₦{totalAmount.toFixed(2)}</span>
           </div>
         </div>
 
