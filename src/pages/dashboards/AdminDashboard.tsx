@@ -59,36 +59,32 @@ const AdminDashboard = () => {
 
   const fetchAllData = async () => {
     try {
-      // Fetch users with roles
+      // Fetch users (no join)
       const { data: usersData, error: usersError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_roles (role)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      // Fetch products with farmer info
+      // Fetch products (no join)
       const { data: productsData, error: productsError } = await supabase
         .from('products')
-        .select(`
-          *,
-          profiles!products_farmer_id_fkey (full_name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      // Fetch orders with product info
+      // Fetch orders (no join)
       const { data: ordersData, error: ordersError } = await supabase
         .from('orders')
-        .select(`
-          *,
-          products (name)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
+
+      // TODO: If you need user roles or farmer names, fetch those tables separately and map in JS
 
       if (!usersError && usersData) setUsers(usersData as any);
       if (!productsError && productsData) setProducts(productsData as any);
       if (!ordersError && ordersData) setOrders(ordersData as any);
+      if (usersError) console.error('Users fetch error:', usersError);
+      if (productsError) console.error('Products fetch error:', productsError);
+      if (ordersError) console.error('Orders fetch error:', ordersError);
     } catch (error) {
       console.error('Error fetching data:', error);
       toast({
@@ -157,7 +153,7 @@ const AdminDashboard = () => {
 
   const filteredOrders = orders.filter(order => {
     const matchesSearch = order.products.name.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus = filterStatus === '' || order.status === filterStatus;
+        const matchesStatus = filterStatus === 'all' || filterStatus === '' || order.status === filterStatus;
     return matchesSearch && matchesStatus;
   });
 
@@ -290,7 +286,7 @@ const AdminDashboard = () => {
                     <div>
                       <p className="font-medium">{product.name}</p>
                       <p className="text-sm text-muted-foreground">
-                        by {product.profiles.full_name} • {product.category}
+                        {product.category}
                       </p>
                       <p className="text-sm">
                         ₦{product.price.toLocaleString('en-NG')} • {product.stock_quantity} in stock
@@ -335,7 +331,7 @@ const AdminDashboard = () => {
                     <SelectValue placeholder="Filter by status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Status</SelectItem>
+                    <SelectItem value="all">All Status</SelectItem>
                     <SelectItem value="pending">Pending</SelectItem>
                     <SelectItem value="confirmed">Confirmed</SelectItem>
                     <SelectItem value="shipped">Shipped</SelectItem>

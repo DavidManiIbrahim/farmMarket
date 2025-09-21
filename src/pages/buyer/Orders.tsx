@@ -26,7 +26,7 @@ const OrdersPage = () => {
       try {
         const { data } = await supabase
           .from('orders')
-          .select(`id, status, total_price, created_at, products (id, name)`) 
+          .select(`id, status, total_price, created_at, products (id, name), tracking_number`) 
           .eq('buyer_id', user.id)
           .order('created_at', { ascending: false });
         setOrders((data as any) || []);

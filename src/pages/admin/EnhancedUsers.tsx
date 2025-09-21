@@ -40,16 +40,28 @@ export const EnhancedUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const { data, error } = await supabase
+      // Fetch profiles
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          user_roles (role)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setUsers(data as any || []);
+      if (profilesError) throw profilesError;
+
+      // Fetch user_roles
+      const { data: roles, error: rolesError } = await supabase
+        .from('user_roles')
+        .select('user_id, role');
+
+      if (rolesError) throw rolesError;
+
+      // Merge roles into profiles
+      const usersWithRoles = (profiles || []).map((profile: any) => ({
+        ...profile,
+        user_roles: (roles || []).filter((r: any) => r.user_id === profile.id)
+      }));
+
+      setUsers(usersWithRoles);
     } catch (error: any) {
       console.error('Error fetching users:', error);
       toast({
