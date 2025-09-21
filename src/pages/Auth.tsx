@@ -70,12 +70,20 @@ const Auth = () => {
       return;
     }
 
+
+    // Map roles: buyer -> buyer, farmer/seller -> seller, admin -> admin
+    let mappedRole = signupForm.role;
+    if (signupForm.role === 'farmer' || signupForm.role === 'seller') {
+      mappedRole = 'seller';
+    } else if (signupForm.role === 'admin') {
+      mappedRole = 'admin';
+    }
+
     const { error } = await signUp(
       signupForm.email,
       signupForm.password,
       signupForm.fullName,
-      // Map buyer to seller, keep admin and farmer as is
-      signupForm.role === 'buyer' ? 'seller' : signupForm.role
+      mappedRole
     );
 
     if (error) {
@@ -227,6 +235,7 @@ const Auth = () => {
                       <SelectContent>
                         <SelectItem value="buyer">Buy Farm Products</SelectItem>
                         <SelectItem value="farmer">Sell Farm Products</SelectItem>
+                        {/* <SelectItem value="admin">Admin</SelectItem> */}
                       </SelectContent>
                     </Select>
                   </div>

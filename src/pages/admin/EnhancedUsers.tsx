@@ -56,6 +56,9 @@ export const EnhancedUsers = () => {
       if (rolesError) throw rolesError;
 
       // Build a map of user_id to roles
+        // Debug output
+        console.log('Fetched profiles:', profiles);
+        console.log('Fetched roles:', roles);
       const rolesMap: Record<string, { role: string }[]> = {};
       (roles || []).forEach((r: any) => {
         if (!rolesMap[r.user_id]) rolesMap[r.user_id] = [];
@@ -67,12 +70,13 @@ export const EnhancedUsers = () => {
         const key = profile.user_id || profile.id;
         return {
           ...profile,
-          user_roles: rolesMap[key] || []
+          user_roles: rolesMap[key] && rolesMap[key].length > 0 ? rolesMap[key] : [{ role: 'buyer' }]
         };
       });
 
       setUsers(usersWithRoles);
     } catch (error: any) {
+        console.log('Merged usersWithRoles:', usersWithRoles);
       console.error('Error fetching users:', error);
       toast({
         title: "Error",
