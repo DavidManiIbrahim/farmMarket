@@ -40,7 +40,7 @@ export const EnhancedUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      // Fetch profiles
+      // Fetch all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -48,18 +48,28 @@ export const EnhancedUsers = () => {
 
       if (profilesError) throw profilesError;
 
-      // Fetch user_roles
+      // Fetch all user_roles
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id, role');
 
       if (rolesError) throw rolesError;
 
-      // Merge roles into profiles
-      const usersWithRoles = (profiles || []).map((profile: any) => ({
-        ...profile,
-        user_roles: (roles || []).filter((r: any) => r.user_id === profile.id)
-      }));
+      // Build a map of user_id to roles
+      const rolesMap: Record<string, { role: string }[]> = {};
+      (roles || []).forEach((r: any) => {
+        if (!rolesMap[r.user_id]) rolesMap[r.user_id] = [];
+        rolesMap[r.user_id].push({ role: r.role });
+      });
+
+      // Merge roles into profiles, always provide user_roles as array
+      const usersWithRoles = (profiles || []).map((profile: any) => {
+        const key = profile.user_id || profile.id;
+        return {
+          ...profile,
+          user_roles: rolesMap[key] || []
+        };
+      });
 
       setUsers(usersWithRoles);
     } catch (error: any) {
@@ -116,7 +126,7 @@ export const EnhancedUsers = () => {
           full_name: editForm.full_name,
           phone: editForm.phone,
         })
-        .eq('user_id', selectedUser.id);
+        .eq('id', selectedUser.id); // Use 'id' for profiles table
 
       if (error) throw error;
 
@@ -150,7 +160,7 @@ export const EnhancedUsers = () => {
       const { error } = await supabase
         .from('profiles')
         .delete()
-        .eq('user_id', userId);
+        .eq('id', userId); // Use 'id' for profiles table
 
       if (error) throw error;
 

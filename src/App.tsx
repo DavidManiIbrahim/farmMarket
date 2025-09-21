@@ -38,6 +38,7 @@ const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
 const ProfilePage = lazy(() => import("./pages/Profile"));
 const AdminUsers = lazy(() => import("./pages/admin/Users"));
 const AdminProducts = lazy(() => import("./pages/admin/Products"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 
 const queryClient = new QueryClient();
 
@@ -132,6 +133,14 @@ const App = () => (
                 element={
                   <ProtectedRoute requiredRole="admin">
                     <AdminProducts />
+                  </ProtectedRoute>
+                }
+              />
+              <Route 
+                path="/admin/analytics" 
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminAnalytics />
                   </ProtectedRoute>
                 }
               />
